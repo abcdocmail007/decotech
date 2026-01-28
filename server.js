@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -90,4 +91,5 @@ app.get('/api/orders', async (req, res) => {
 app.delete('/api/orders/:id', async (req, res) => {
     await Order.findByIdAndDelete(req.params.id);
     res.send({ message: "Order Deleted" });
+
 });
