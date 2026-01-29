@@ -149,14 +149,18 @@
         } catch (err) { alert("সার্ভার সমস্যা!"); }
     };
 
-    // ৩. অর্ডার লোড করা (FIXED UNDEFINED)
+    // ৩. অর্ডার লোড করা (FIXED UNDEFINED & AMOUNT 0)
     async function loadOrders() {
         try {
             const res = await fetch(orderURL);
             const orders = await res.json();
             const list = document.getElementById('orderList');
             
-            list.innerHTML = orders.reverse().map(order => `
+            list.innerHTML = orders.reverse().map(order => {
+                // ডাটাবেসে যে নামেই টোটাল থাকুক না কেন সেটি খুজে বের করার লজিক
+                const displayTotal = order.total || order.totalAmount || order.totalPrice || 0;
+                
+                return `
                 <tr>
                     <td><strong>${order.customerName || 'N/A'}</strong></td>
                     <td>${order.phone || 'N/A'}<br><small style="color:#666">${order.address || 'N/A'}</small></td>
@@ -164,10 +168,11 @@
                         ${order.products || 'No items'}
                         <br><span class="method-tag">${order.paymentMethod || 'Cash on Delivery'}</span>
                     </td>
-                    <td><strong>৳ ${order.total || 0}</strong></td>
+                    <td><strong>৳ ${displayTotal}</strong></td>
                     <td><i class="fas fa-trash-alt delete-btn" onclick="deleteOrder('${order._id}')"></i></td>
                 </tr>
-            `).join('');
+                `;
+            }).join('');
         } catch (err) { console.error("Orders failed:", err); }
     }
 
@@ -191,10 +196,9 @@
         window.location.href = 'admin-login.html';
     }
 
-    // ইনিশিয়াল লোড
+    // প্রাথমিক লোড
     loadProducts();
     loadOrders();
     </script>
 </body>
 </html>
-
