@@ -18,10 +18,11 @@
         .form-group { margin-bottom: 20px; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
         .payment-methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
         .method-box { border: 2px solid #eee; padding: 15px; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.3s; }
         .method-box.active { border-color: var(--accent); background: #fdfaf5; }
+        .method-box i { font-size: 20px; margin-bottom: 5px; display: block; }
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; color: #666; }
         .total-price { font-size: 22px; font-weight: 700; color: #1d4ed8; }
         .confirm-btn { width: 100%; background: var(--accent); color: white; border: none; padding: 18px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 30px; }
@@ -30,25 +31,46 @@
 </head>
 <body>
 
-<nav><a href="index.html" class="logo">DECO<span>TECH</span></a></nav>
+<nav>
+    <a href="index.html" class="logo">DECO<span>TECH</span></a>
+</nav>
 
 <div class="checkout-container">
     <div class="card">
         <h2>শিপিং ঠিকানা</h2>
         <form id="orderForm">
-            <div class="form-group"><label>পূর্ণ নাম</label><input type="text" id="name" required></div>
+            <div class="form-group">
+                <label>আপনার পূর্ণ নাম</label>
+                <input type="text" id="name" placeholder="যেমন: আবদুর রহমান" required>
+            </div>
             <div class="form-row">
-                <div class="form-group"><label>ফোন নম্বর</label><input type="tel" id="phone" required></div>
-                <div class="form-group"><label>ইমেইল (ঐচ্ছিক)</label><input type="email" id="email"></div>
+                <div class="form-group">
+                    <label>ফোন নম্বর</label>
+                    <input type="tel" id="phone" placeholder="017XXXXXXXX" required>
+                </div>
+                <div class="form-group">
+                    <label>ইমেইল (ঐচ্ছিক)</label>
+                    <input type="email" id="email" placeholder="name@example.com">
+                </div>
             </div>
-            <div class="form-group"><label>পূর্ণ ঠিকানা</label><textarea id="address" rows="3" required></textarea></div>
+            <div class="form-group">
+                <label>পূর্ণ ঠিকানা</label>
+                <textarea id="address" rows="3" placeholder="বাসা নং, রোড নং, এলাকা, জেলা" required></textarea>
+            </div>
 
-            <h2>পেমেন্ট পদ্ধতি</h2>
+            <h2 style="margin-top: 40px;">পেমেন্ট পদ্ধতি</h2>
             <div class="payment-methods">
-                <div class="method-box active" onclick="selectPayment('Cash on Delivery', this)"><i class="fas fa-truck"></i> ক্যাশ অন ডেলিভারি</div>
-                <div class="method-box" onclick="selectPayment('BKASH', this)"><i class="fas fa-mobile-alt"></i> বিকাশ</div>
-                <div class="method-box" onclick="selectPayment('NAGAD', this)"><i class="fas fa-wallet"></i> নগদ</div>
+                <div class="method-box active" onclick="selectPayment('Cash on Delivery', this)">
+                    <i class="fas fa-truck"></i> ক্যাশ অন ডেলিভারি
+                </div>
+                <div class="method-box" onclick="selectPayment('BKASH', this)">
+                    <i class="fas fa-mobile-alt"></i> বিকাশ
+                </div>
+                <div class="method-box" onclick="selectPayment('NAGAD', this)">
+                    <i class="fas fa-wallet"></i> নগদ
+                </div>
             </div>
+
             <button type="submit" id="submitBtn" class="confirm-btn">অর্ডার কনফার্ম করুন</button>
         </form>
     </div>
@@ -56,51 +78,72 @@
     <div class="order-summary card">
         <h3>আপনার অর্ডার</h3>
         <div id="orderItems"></div>
-        <hr>
-        <div class="summary-row"><span>সাব-টোটাল:</span><span id="subtotal">৳ ০</span></div>
-        <div class="summary-row"><span>ডেলিভারি চার্জ:</span><span>৳ ৬০</span></div>
-        <div class="summary-row total-price"><span>মোট দেয়:</span><span id="totalDisplay">৳ ৬০</span></div>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+        <div class="summary-row">
+            <span>সাব-টোটাল:</span>
+            <span id="subtotal">৳ ০</span>
+        </div>
+        <div class="summary-row">
+            <span>ডেলিভারি চার্জ:</span>
+            <span>৳ ৬০</span>
+        </div>
+        <div class="summary-row total-price" style="border-top: 2px solid #eee; padding-top: 15px; margin-top: 10px;">
+            <span>মোট দেয়:</span>
+            <span id="totalDisplay">৳ ৬০</span>
+        </div>
     </div>
 </div>
 
 <script>
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let selectedPayment = 'Cash on Delivery';
-    let finalTotal = 0;
+    let finalTotalAmount = 0; // এটি নম্বর হিসেবে রাখা হয়েছে
 
     function renderSummary() {
         const itemContainer = document.getElementById('orderItems');
         let subtotal = 0;
+
+        if(cart.length === 0) {
+            itemContainer.innerHTML = '<p style="color:red;">কার্ট খালি!</p>';
+            return;
+        }
+
         itemContainer.innerHTML = cart.map(item => {
-            let price = parseInt(item.price) || 0;
-            let qty = parseInt(item.quantity) || 1;
-            subtotal += (price * qty);
-            return `<div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    <span>${item.name} (x${qty})</span><span>৳ ${price * qty}</span></div>`;
+            const price = parseInt(item.price) || 0;
+            const qty = item.quantity || 1;
+            const itemTotal = price * qty;
+            subtotal += itemTotal;
+            return `<div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px;">
+                    <span>${item.name} x ${qty}</span>
+                    <span>৳ ${itemTotal}</span>
+                </div>`;
         }).join('');
-        finalTotal = subtotal + 60;
+
+        finalTotalAmount = subtotal + 60;
         document.getElementById('subtotal').innerText = `৳ ${subtotal}`;
-        document.getElementById('totalDisplay').innerText = `৳ ${finalTotal}`;
+        document.getElementById('totalDisplay').innerText = `৳ ${finalTotalAmount}`;
     }
 
-    function selectPayment(m, el) {
-        selectedPayment = m;
-        document.querySelectorAll('.method-box').forEach(b => b.classList.remove('active'));
-        el.classList.add('active');
+    function selectPayment(type, element) {
+        selectedPayment = type;
+        document.querySelectorAll('.method-box').forEach(box => box.classList.remove('active'));
+        element.classList.add('active');
     }
 
-    document.getElementById('orderForm').onsubmit = async (e) => {
+    document.getElementById('orderForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+        
         const btn = document.getElementById('submitBtn');
-        btn.disabled = true; btn.innerText = "প্রসেসিং...";
+        btn.innerText = "প্রসেসিং হচ্ছে...";
+        btn.disabled = true;
 
         const orderData = {
             customerName: document.getElementById('name').value,
             phone: document.getElementById('phone').value,
             address: document.getElementById('address').value,
+            paymentMethod: selectedPayment,
             products: cart.map(i => `${i.name} (${i.quantity || 1})`).join(', '),
-            total: finalTotal, // নিশ্চিতভাবে সংখ্যা পাঠানো হচ্ছে
-            paymentMethod: selectedPayment
+            total: finalTotalAmount // নিশ্চিতভাবে Number হিসেবে পাঠানো হচ্ছে
         };
 
         try {
@@ -109,9 +152,23 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
             });
-            if(res.ok) { alert("অর্ডার সফল!"); localStorage.removeItem('cart'); window.location.href = 'index.html'; }
-        } catch (err) { alert("ত্রুটি হয়েছে!"); btn.disabled = false; }
-    };
+
+            if(res.ok) {
+                alert("অর্ডার সফল হয়েছে!");
+                localStorage.removeItem('cart');
+                window.location.href = 'index.html';
+            } else {
+                alert("অর্ডার দিতে সমস্যা হয়েছে।");
+                btn.innerText = "অর্ডার কনফার্ম করুন";
+                btn.disabled = false;
+            }
+        } catch (err) {
+            alert("সার্ভার সমস্যা!");
+            btn.innerText = "অর্ডার কনফার্ম করুন";
+            btn.disabled = false;
+        }
+    });
+
     renderSummary();
 </script>
 </body>
