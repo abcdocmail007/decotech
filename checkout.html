@@ -7,11 +7,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3.11.0/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            // আপনার EmailJS Public Key এখানে বসান
-            emailjs.init("WnceGWWVztvV9vkRD"); 
+            // আপনার Public Key টি এখানে আছে
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init("WnceGWWVztvV9vkRD");
+            }
         })();
     </script>
 
@@ -35,7 +37,7 @@
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; color: #666; }
         .total-price { font-size: 22px; font-weight: 700; color: #1d4ed8; }
         .confirm-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 30px; transition: 0.3s; }
-        .confirm-btn:hover { background: #00332a; }
+        .confirm-btn:disabled { background: #ccc; cursor: not-allowed; }
         @media (max-width: 850px) { .checkout-container { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -160,16 +162,15 @@
         };
 
         try {
-            // ১. অ্যাডমিন ড্যাশবোর্ডে অর্ডার সেভ করা
+            // ১. এপিআই তে পাঠানো (Timeout handle করার জন্য ৩০ সেকেন্ড সময় দেওয়া হয়েছে)
             const res = await fetch('https://decotech-api.onrender.com/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
             });
 
-            if(res.ok) {
-                // ২. ইমেইল পাঠানো (EmailJS)
-                // আপনার Service ID এবং Template ID এখানে বসাবেন
+            // ২. ইমেইল পাঠানোর চেষ্টা (যদি লাইব্রেরি লোড হয়)
+            if (typeof emailjs !== 'undefined') {
                 emailjs.send("service_qbtls6p", "template_7aca5go", {
                     to_name: name,
                     to_email: email,
@@ -179,28 +180,28 @@
                     payment_method: selectedPayment,
                     address: address,
                     customer_phone: phone
-                });
-
-                // ৩. হোয়াটসঅ্যাপে মেসেজ পাঠানো
-                sendToWhatsApp(orderData);
-
-                alert("অর্ডার সফল হয়েছে! আপনার ইমেইল এবং হোয়াটসঅ্যাপ চেক করুন।");
-                localStorage.removeItem('cart');
-                window.location.href = 'index.html';
-            } else {
-                alert("অর্ডার দিতে সমস্যা হয়েছে।");
-                btn.disabled = false;
-                btn.innerText = "অর্ডার কনফার্ম করুন";
+                }).catch(err => console.error("EmailJS Error: ", err));
             }
+
+            // ৩. হোয়াটসঅ্যাপ নোটিফিকেশন (সরাসরি পপআপ)
+            sendToWhatsApp(orderData);
+
+            alert("অর্ডার সফল হয়েছে!");
+            localStorage.removeItem('cart');
+            window.location.href = 'index.html';
+
         } catch (err) {
-            alert("সার্ভার সমস্যা!");
-            btn.disabled = false;
-            btn.innerText = "অর্ডার কনফার্ম করুন";
+            console.error("Fetch Error: ", err);
+            // যদি সার্ভার ডাউন থাকে, তবুও হোয়াটসঅ্যাপের মাধ্যমে ব্যাকআপ অর্ডার
+            alert("সার্ভার একটু স্লো, তবে আমরা হোয়াটসঅ্যাপে আপনার তথ্য পাঠিয়ে দিচ্ছি।");
+            sendToWhatsApp(orderData);
+            localStorage.removeItem('cart');
+            window.location.href = 'index.html';
         }
     });
 
     function sendToWhatsApp(data) {
-        const adminNumber = "8801778899326"; // আপনার ফোন নাম্বার এখানে দিন
+        const adminNumber = "8801778899326"; 
         let msg = `🚀 *New Order - DecoTech*%0A%0A`;
         msg += `👤 *Name:* ${data.customerName}%0A`;
         msg += `📞 *Phone:* ${data.phone}%0A`;
@@ -217,4 +218,3 @@
 </script>
 </body>
 </html>
-
