@@ -10,7 +10,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            // Public Key initialization with updated syntax
+            // আপনার Public Key initialization
             if (typeof emailjs !== 'undefined') {
                 emailjs.init({
                     publicKey: "WnceGWWVztvV9vkRD",
@@ -163,47 +163,41 @@
             total: finalTotalAmount
         };
 
-        // Function to handle completion
-        const finalizeOrder = () => {
-            alert("অর্ডার সফল হয়েছে!");
-            localStorage.removeItem('cart');
-            window.location.href = 'index.html';
-        };
-
         try {
-            // ১. ডাটাবেসে সেভ করার চেষ্টা
-            const apiPromise = fetch('https://decotech-api.onrender.com/api/orders', {
+            // ১. এপিআই তে ডাটা পাঠানো (Render Server)
+            const apiRequest = fetch('https://decotech-api.onrender.com/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
             });
 
-            // ২. ইমেইল পাঠানোর চেষ্টা (লাইব্রেরি লোড না হলে স্কিপ করবে)
+            // ২. EmailJS দিয়ে ইমেইল পাঠানো
             if (typeof emailjs !== 'undefined') {
-                emailjs.send("service_1q3gd3u", "template_7aca5go", {
+                emailjs.send("service_qbtls6p", "template_7aca5go", {
                     to_name: name,
-                    to_email: email,
-                    order_id: Math.floor(100000 + Math.random() * 900000),
+                    to_email: email, // কাস্টমারের ইমেইল
                     order_details: orderData.products,
                     total_price: finalTotalAmount,
-                    payment_method: selectedPayment,
                     address: address,
                     customer_phone: phone
-                }).then(() => console.log("Email sent successfully"))
-                  .catch(err => console.log("Email failed:", err));
+                });
             }
 
-            // ৩. হোয়াটসঅ্যাপ পপআপ
+            // ৩. হোয়াটসঅ্যাপে রিডাইরেক্ট
             sendToWhatsApp(orderData);
 
-            // এপিআই রেসপন্সের জন্য অপেক্ষা
-            await apiPromise;
-            finalizeOrder();
+            // অর্ডার সম্পন্ন করার প্রক্রিয়া
+            alert("অর্ডার সফল হয়েছে! আপনার ইমেইল চেক করুন।");
+            localStorage.removeItem('cart');
+            window.location.href = 'index.html';
 
         } catch (err) {
-            console.error("Order process encountered an issue:", err);
-            // এমনকি যদি API বা ইমেইল ফেইল করে, হোয়াটসঅ্যাপ যেহেতু ট্রিগার হয়েছে, অর্ডার সম্পন্ন হিসেবে ধরা হবে
-            finalizeOrder();
+            console.error("Order error:", err);
+            // ব্যাকআপ হিসেবে হোয়াটসঅ্যাপ ওপেন রাখা
+            sendToWhatsApp(orderData);
+            alert("অর্ডার প্রসেস হয়েছে, হোয়াটসঅ্যাপ চেক করুন।");
+            localStorage.removeItem('cart');
+            window.location.href = 'index.html';
         }
     });
 
@@ -225,4 +219,3 @@
 </script>
 </body>
 </html>
-
