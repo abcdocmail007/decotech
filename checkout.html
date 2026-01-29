@@ -10,13 +10,11 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            // EmailJS Initialization
+            // Public Key initialization with updated syntax
             if (typeof emailjs !== 'undefined') {
                 emailjs.init({
                     publicKey: "WnceGWWVztvV9vkRD",
                 });
-            } else {
-                console.error("EmailJS SDK লোড হতে পারেনি। ইন্টারনেট কানেকশন চেক করুন।");
             }
         })();
     </script>
@@ -125,10 +123,11 @@
         itemContainer.innerHTML = cart.map(item => {
             const price = parseInt(item.price) || 0;
             const qty = item.quantity || 1;
-            subtotal += (price * qty);
+            const itemTotal = price * qty;
+            subtotal += itemTotal;
             return `<div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px;">
                     <span>${item.name} x ${qty}</span>
-                    <span>৳ ${price * qty}</span>
+                    <span>৳ ${itemTotal}</span>
                 </div>`;
         }).join('');
         finalTotalAmount = subtotal + 60;
@@ -144,6 +143,7 @@
 
     document.getElementById('orderForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+        
         const btn = document.getElementById('submitBtn');
         const name = document.getElementById('name').value;
         const phone = document.getElementById('phone').value;
@@ -163,44 +163,47 @@
             total: finalTotalAmount
         };
 
-        const completeOrder = () => {
-            alert("অর্ডার সফল হয়েছে! আপনার ইমেইল (Spam ফোল্ডারসহ) চেক করুন।");
+        // Function to handle completion
+        const finalizeOrder = () => {
+            alert("অর্ডার সফল হয়েছে!");
             localStorage.removeItem('cart');
             window.location.href = 'index.html';
         };
 
-        // ১. হোয়াটসঅ্যাপে মেসেজ পাঠানো
-        sendToWhatsApp(orderData);
-
-        // ২. ডাটাবেস এবং ইমেইল হ্যান্ডলিং
         try {
-            // API কল (Render Server)
-            fetch('https://decotech-api.onrender.com/api/orders', {
+            // ১. ডাটাবেসে সেভ করার চেষ্টা
+            const apiPromise = fetch('https://decotech-api.onrender.com/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
-            }).catch(() => console.log("API Server offline, but proceeding..."));
+            });
 
-            // ইমেইল পাঠানো
+            // ২. ইমেইল পাঠানোর চেষ্টা (লাইব্রেরি লোড না হলে স্কিপ করবে)
             if (typeof emailjs !== 'undefined') {
-                await emailjs.send("service_qbtls6p", "template_7aca5go", {
+                emailjs.send("service_qbtls6p", "template_7aca5go", {
                     to_name: name,
-                    to_email: email, // কাস্টমারের ইমেইল
+                    to_email: email,
+                    order_id: Math.floor(100000 + Math.random() * 900000),
                     order_details: orderData.products,
                     total_price: finalTotalAmount,
+                    payment_method: selectedPayment,
                     address: address,
                     customer_phone: phone
-                });
-                console.log("Email sent successfully!");
-            } else {
-                throw new Error("EmailJS not defined");
+                }).then(() => console.log("Email sent successfully"))
+                  .catch(err => console.log("Email failed:", err));
             }
-            
-            completeOrder();
+
+            // ৩. হোয়াটসঅ্যাপ পপআপ
+            sendToWhatsApp(orderData);
+
+            // এপিআই রেসপন্সের জন্য অপেক্ষা
+            await apiPromise;
+            finalizeOrder();
+
         } catch (err) {
-            console.error("Email error:", err);
-            // ইমেইল না গেলেও হোয়াটসঅ্যাপ চলে গেছে, তাই অর্ডার সম্পন্ন হবে
-            completeOrder();
+            console.error("Order process encountered an issue:", err);
+            // এমনকি যদি API বা ইমেইল ফেইল করে, হোয়াটসঅ্যাপ যেহেতু ট্রিগার হয়েছে, অর্ডার সম্পন্ন হিসেবে ধরা হবে
+            finalizeOrder();
         }
     });
 
@@ -213,6 +216,7 @@
         msg += `💰 *Total:* ৳${data.total}%0A`;
         msg += `💳 *Payment:* ${data.paymentMethod}%0A`;
         msg += `🛒 *Products:* ${data.products}`;
+
         const url = `https://wa.me/${adminNumber}?text=${msg}`;
         window.open(url, '_blank');
     }
