@@ -9,36 +9,23 @@
     <style>
         :root { --primary: #004d40; --accent: #c09b5d; --bg: #f8faf9; }
         body { font-family: 'Hind Siliguri', sans-serif; margin: 0; background: var(--bg); color: #333; }
-        
         nav { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .logo { font-size: 22px; font-weight: 700; color: var(--primary); text-decoration: none; }
         .logo span { color: #ff9800; }
-
         .checkout-container { max-width: 1100px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
-        
         .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
         h2 { font-size: 20px; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-
-        /* Form Styling */
         .form-group { margin-bottom: 20px; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
         input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
-        
-        /* Payment Method */
         .payment-methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
         .method-box { border: 2px solid #eee; padding: 15px; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.3s; }
         .method-box.active { border-color: var(--accent); background: #fdfaf5; }
         .method-box i { font-size: 20px; margin-bottom: 5px; display: block; }
-
-        /* Summary Section */
-        .order-summary { height: fit-content; position: sticky; top: 100px; }
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; color: #666; }
         .total-price { font-size: 22px; font-weight: 700; color: #1d4ed8; }
-        
         .confirm-btn { width: 100%; background: var(--accent); color: white; border: none; padding: 18px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 30px; }
-        .confirm-btn:hover { opacity: 0.9; }
-
         @media (max-width: 850px) { .checkout-container { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -115,19 +102,15 @@
     function renderSummary() {
         const itemContainer = document.getElementById('orderItems');
         let subtotal = 0;
-
         itemContainer.innerHTML = cart.map(item => {
             const qty = item.quantity || 1;
             const itemTotal = item.price * qty;
             subtotal += itemTotal;
-            return `
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px;">
+            return `<div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px;">
                     <span>${item.name} x ${qty}</span>
                     <span>৳ ${itemTotal}</span>
-                </div>
-            `;
+                </div>`;
         }).join('');
-
         document.getElementById('subtotal').innerText = `৳ ${subtotal}`;
         document.getElementById('total').innerText = `৳ ${subtotal + 60}`;
     }
@@ -141,11 +124,12 @@
     document.getElementById('orderForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
+        // Proper naming to match database/admin view
         const orderData = {
             customerName: document.getElementById('name').value,
             phone: document.getElementById('phone').value,
             address: document.getElementById('address').value,
-            paymentMethod: selectedPayment,
+            paymentMethod: selectedPayment === 'cod' ? 'Cash on Delivery' : selectedPayment.toUpperCase(),
             products: cart.map(i => `${i.name} (${i.quantity || 1})`).join(', '),
             total: parseInt(document.getElementById('total').innerText.replace('৳ ', ''))
         };
@@ -156,17 +140,15 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
             });
-
             if(res.ok) {
-                alert("অর্ডার সফল হয়েছে!");
+                alert("অর্ডার সফল হয়েছে!");
                 localStorage.removeItem('cart');
                 window.location.href = 'index.html';
             }
         } catch (err) {
-            alert("সার্ভার সমস্যা! আবার চেষ্টা করুন।");
+            alert("সার্ভার সমস্যা!");
         }
     });
-
     renderSummary();
 </script>
 </body>
