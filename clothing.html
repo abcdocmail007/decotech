@@ -11,10 +11,10 @@
     <script src="https://unpkg.com/scrollreveal"></script>
 
     <style>
-        :root { --primary: #004d40; --accent: #ff9800; --bg: #ffffff; --card-bg: #f9f9f9; }
+        :root { --primary: #004d40; --accent: #ff9800; --bg: #ffffff; }
         body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); overflow-x: hidden; }
 
-        /* --- UNIVERSAL NAVBAR --- */
+        /* --- NAVBAR --- */
         nav { 
             background: white; padding: 15px 5%; display: flex; 
             align-items: center; justify-content: space-between; 
@@ -38,12 +38,11 @@
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
 
-        /* PREMIUM CARD ANIMATION */
         .clothing-card { 
-            background: var(--white); border-radius: 0px; overflow: hidden; 
+            background: #fff; border-radius: 0px; overflow: hidden; 
             transition: 0.4s ease; position: relative;
         }
-        .img-container { overflow: hidden; position: relative; height: 380px; }
+        .img-container { overflow: hidden; position: relative; height: 380px; background: #f0f0f0; }
         .clothing-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s ease; }
         .clothing-card:hover img { transform: scale(1.1); }
         
@@ -52,17 +51,19 @@
         .price { font-size: 17px; font-weight: 700; color: var(--primary); margin-top: 5px; }
         
         .btn-overlay {
-            position: absolute; bottom: -50px; left: 0; width: 100%; 
-            transition: 0.3s; opacity: 0;
+            position: absolute; bottom: -60px; left: 0; width: 100%; 
+            transition: 0.3s; opacity: 0; text-align: center;
         }
         .clothing-card:hover .btn-overlay { bottom: 20px; opacity: 1; }
         .add-btn { 
             background: var(--primary); color: white; border: none; 
-            padding: 12px; width: 80%; margin: 0 auto; display: block;
+            padding: 12px; width: 85%; margin: 0 auto;
             cursor: pointer; font-weight: 600; text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
+        .add-btn:hover { background: var(--accent); }
 
-        /* --- UNIVERSAL FOOTER --- */
+        /* --- FOOTER --- */
         footer { background: var(--primary); color: white; padding: 60px 5% 30px; margin-top: 80px; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
         .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px; padding-top: 20px; text-align: center; font-size: 14px; opacity: 0.6; }
@@ -74,7 +75,6 @@
         <a href="index.html" class="logo">Deco<span>Tech</span></a>
         <div class="nav-links">
             <a href="index.html">Home</a>
-            <a href="shop.html">Shop</a>
             <a href="gadgets.html">Gadgets</a>
             <a href="decor.html">Decor</a>
             <a href="clothing.html" style="color: var(--accent);">Clothing</a>
@@ -83,26 +83,27 @@
             <input type="text" placeholder="Search fashion..." id="searchCloth" onkeyup="filterCloth()">
             <i class="fa fa-search"></i>
         </div>
-        <div style="font-size: 20px; color: var(--primary); cursor: pointer; position: relative;">
+        <a href="cart.html" style="font-size: 20px; color: var(--primary); cursor: pointer; position: relative; text-decoration: none;">
             <i class="fa fa-shopping-cart"></i>
-            <span id="cartCount" style="position:absolute; top:-10px; right:-10px; background:var(--accent); color:white; font-size:10px; padding:2px 5px; border-radius:50%;">0</span>
-        </div>
+            <span id="cartCount" style="position:absolute; top:-10px; right:-10px; background:var(--accent); color:white; font-size:10px; padding:2px 6px; border-radius:50%;">0</span>
+        </a>
     </nav>
 
     <div class="page-header reveal-top">
-        <h1>New Winter Collection</h1>
+        <h1>Clothing Collection</h1>
         <p>Elevate your style with DecoTech Fashion</p>
     </div>
 
     <div class="container">
         <div id="clothingList" class="grid">
-            </div>
+            <p style="text-align: center; grid-column: 1/-1;">পোশাকের কালেকশন লোড হচ্ছে...</p>
+        </div>
     </div>
 
     <footer>
         <div class="footer-grid">
-            <div><h2>DecoTech</h2><p>Premium lifestyle products.</p></div>
-            <div><h4>Help</h4><p>FAQs</p><p>Shipping</p></div>
+            <div><h2>DecoTech</h2><p>Premium lifestyle products for your everyday needs.</p></div>
+            <div><h4>Categories</h4><p>Gadgets</p><p>Home Decor</p><p>Clothing</p></div>
             <div><h4>Social</h4><p><i class="fab fa-facebook"></i> Facebook</p><p><i class="fab fa-instagram"></i> Instagram</p></div>
         </div>
         <div class="footer-bottom">&copy; 2026 DecoTech. All Rights Reserved.</div>
@@ -110,31 +111,45 @@
 
     <script>
         async function loadClothing() {
-            const res = await fetch('http://localhost:5000/api/products');
-            const products = await res.json();
+            try {
+                // অনলাইন এপিআই ব্যবহার করা হয়েছে
+                const res = await fetch('https://decotech-api.onrender.com/api/products');
+                const products = await res.json();
 
-            // Sudhu 'Clothing' filter kora hoyeche
-            const clothing = products.filter(p => p.category === 'Clothing');
+                // অ্যাডমিন প্যানেল থেকে পাঠানো 'Clothing' ক্যাটেগরি ফিল্টার করা হচ্ছে
+                const clothing = products.filter(p => p.category === 'Clothing');
 
-            const list = document.getElementById('clothingList');
-            list.innerHTML = clothing.map(p => `
-                <div class="clothing-card reveal-item">
-                    <div class="img-container">
-                        <img src="${p.image}">
-                        <div class="btn-overlay">
-                            <button class="add-btn" onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
+                const list = document.getElementById('clothingList');
+                if(clothing.length === 0) {
+                    list.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">বর্তমানে কোন পোশাক নেই। অ্যাডমিন প্যানেল থেকে যোগ করুন।</p>';
+                    return;
+                }
+
+                list.innerHTML = clothing.map(p => `
+                    <div class="clothing-card reveal-item">
+                        <div class="img-container">
+                            <img src="${p.image || p.imageUrl}" onerror="this.src='https://placehold.co/300x400?text=Fashion+Item'">
+                            <div class="btn-overlay">
+                                <button class="add-btn" onclick="addToCart('${p.name}', ${p.price}, '${p.image || p.imageUrl}')">Add to Cart</button>
+                            </div>
+                        </div>
+                        <div class="card-info">
+                            <h3>${p.name}</h3>
+                            <div class="price">৳ ${p.price}</div>
                         </div>
                     </div>
-                    <div class="card-info">
-                        <h3>${p.name}</h3>
-                        <div class="price">৳ ${p.price}</div>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
 
-            // Animations
-            ScrollReveal().reveal('.reveal-top', { distance: '30px', duration: 1000, origin: 'top' });
-            ScrollReveal().reveal('.reveal-item', { distance: '50px', duration: 800, origin: 'bottom', interval: 150 });
+                updateCartCount();
+
+                // Animations
+                ScrollReveal().reveal('.reveal-top', { distance: '30px', duration: 1000, origin: 'top' });
+                ScrollReveal().reveal('.reveal-item', { distance: '50px', duration: 800, origin: 'bottom', interval: 150 });
+            
+            } catch (err) {
+                console.error("Clothing load failed:", err);
+                document.getElementById('clothingList').innerHTML = '<p style="text-align:center; color:red; grid-column:1/-1;">সার্ভার থেকে ডেটা লোড করা যায়নি।</p>';
+            }
         }
 
         function filterCloth() {
@@ -144,6 +159,27 @@
                 let name = card.querySelector('h3').innerText.toLowerCase();
                 card.style.display = name.includes(input) ? "block" : "none";
             }
+        }
+
+        function addToCart(name, price, image) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let existingItem = cart.find(item => item.name === name);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ name, price, image, quantity: 1 });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            alert(name + " কার্টে যোগ করা হয়েছে!");
+        }
+
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let total = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').innerText = total;
         }
 
         loadClothing();
