@@ -21,16 +21,16 @@
         /* Product Card */
         .container { max-width: 1200px; margin: 40px auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; padding: 0 20px; }
         .card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; padding-bottom: 15px; }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
-        .buy-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        .card img { width: 100%; height: 200px; object-fit: cover; cursor: pointer; }
+        .card h3 { cursor: pointer; color: #333; }
+        .buy-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .buy-btn:hover { background: #00332a; }
     </style>
 </head>
 <body>
 
-<nav style="background: #ffffff; padding: 10px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 15px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 1000;">
-    <a href="index.html" style="text-decoration: none; font-size: 26px; font-weight: 700; color: #004d40;">
-        Deco<span style="color: #ff9800;">Tech</span>
-    </a>
+<nav>
+    <a href="index.html" class="logo">Deco<span>Tech</span></a>
 
     <div style="display: flex; gap: 20px;">
         <a href="index.html" style="text-decoration: none; color: #333; font-weight: 500;">Home</a>
@@ -81,40 +81,33 @@
     // Live API URL
     const apiURL = 'https://decotech-api.onrender.com/api/products';
 
-    // 1. Fetch Products from Render
+    // 1. Fetch Products
     async function fetchProducts() {
-        // index.html er script section-e thik korun
-list.innerHTML = products.slice(0, 8).map(p => `
-    <div class="card">
-        <a href="product-details.html?id=${p._id}" style="text-decoration:none; color:inherit;">
-            <img src="${p.image}" onerror="this.src='https://placehold.co/400x300?text=No+Image'">
-            <h3>${p.name}</h3>
-        </a>
-        <p>৳ ${p.price}</p>
-        <button class="buy-btn" onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
-    </div>
-`).join('');
         try {
             const res = await fetch(apiURL);
             const products = await res.json();
             const list = document.getElementById('productList');
             
-            if (products.length === 0) {
+            if (!products || products.length === 0) {
                 list.innerHTML = "<p style='text-align:center; grid-column: 1/-1;'>No products available.</p>";
                 return;
             }
 
+            // Cleanly mapping products to HTML
             list.innerHTML = products.slice(0, 8).map(p => `
                 <div class="card">
-                    <img src="${p.image}" onerror="this.src='https://placehold.co/400x300?text=No+Image'">
-                    <h3>${p.name}</h3>
+                    <a href="product-details.html?id=${p._id}" style="text-decoration:none; color:inherit;">
+                        <img src="${p.image}" onerror="this.src='https://placehold.co/400x300?text=No+Image'">
+                        <h3>${p.name}</h3>
+                    </a>
                     <p>৳ ${p.price}</p>
                     <button class="buy-btn" onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
                 </div>
             `).join('');
+            
         } catch (err) {
             console.error("Error fetching products:", err);
-            document.getElementById('productList').innerHTML = "<p style='text-align:center; grid-column: 1/-1;'>Failed to load products. Server might be sleeping, please refresh.</p>";
+            document.getElementById('productList').innerHTML = "<p style='text-align:center; grid-column: 1/-1;'>Server sleeping. Refresh after 30 seconds!</p>";
         }
     }
 
@@ -157,4 +150,3 @@ list.innerHTML = products.slice(0, 8).map(p => `
 </script>
 </body>
 </html>
-
