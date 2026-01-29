@@ -162,7 +162,7 @@
                     <td>${order.phone || 'N/A'}<br><small style="color:#666">${order.address || 'N/A'}</small></td>
                     <td>
                         ${order.products || 'No items'}
-                        <br><span class="method-tag">${order.paymentMethod || 'COD'}</span>
+                        <br><span class="method-tag">${order.paymentMethod || 'Cash on Delivery'}</span>
                     </td>
                     <td><strong>৳ ${order.total || 0}</strong></td>
                     <td><i class="fas fa-trash-alt delete-btn" onclick="deleteOrder('${order._id}')"></i></td>
@@ -197,3 +197,4 @@
     </script>
 </body>
 </html>
+
