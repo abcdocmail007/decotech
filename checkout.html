@@ -15,8 +15,6 @@
                 emailjs.init({
                     publicKey: "WnceGWWVztvV9vkRD",
                 });
-            } else {
-                console.error("EmailJS SDK লোড হতে পারেনি। ইন্টারনেট কানেকশন চেক করুন।");
             }
         })();
     </script>
@@ -147,7 +145,7 @@
         const btn = document.getElementById('submitBtn');
         const name = document.getElementById('name').value;
         const phone = document.getElementById('phone').value;
-        const email = document.getElementById('email').value;
+        const customer_email = document.getElementById('email').value;
         const address = document.getElementById('address').value;
 
         btn.innerText = "অর্ডার প্রসেসিং হচ্ছে...";
@@ -156,7 +154,7 @@
         const orderData = {
             customerName: name,
             phone: phone,
-            email: email,
+            email: customer_email,
             address: address,
             paymentMethod: selectedPayment,
             products: cart.map(i => `${i.name} (x${i.quantity || 1})`).join(', '),
@@ -169,7 +167,7 @@
             window.location.href = 'index.html';
         };
 
-        // ১. হোয়াটসঅ্যাপে মেসেজ পাঠানো
+        // ১. হোয়াটসঅ্যাপে মেসেজ পাঠানো (আগে পাঠানো হচ্ছে যেন কোনো লস না হয়)
         sendToWhatsApp(orderData);
 
         // ২. ডাটাবেস এবং ইমেইল হ্যান্ডলিং
@@ -179,27 +177,26 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
-            }).catch(() => console.log("API Server offline, but proceeding..."));
+            }).catch(() => console.log("DB connection skip"));
 
-            // ইমেইল পাঠানো
+            // ইমেইল পাঠানো - ইমেইল না যাওয়া পর্যন্ত অপেক্ষা করবে
             if (typeof emailjs !== 'undefined') {
-                await emailjs.send("service_qbtls6p", "template_7aca5go", {
+                const templateParams = {
                     to_name: name,
-                    to_email: email, // কাস্টমারের ইমেইল
+                    to_email: customer_email, // এখানে আপনার ইমেইল ভেরিয়েবল
                     order_details: orderData.products,
                     total_price: finalTotalAmount,
                     address: address,
                     customer_phone: phone
-                });
-                console.log("Email sent successfully!");
-            } else {
-                throw new Error("EmailJS not defined");
+                };
+
+                await emailjs.send("service_qbtls6p", "template_7aca5go", templateParams);
+                console.log("Email Success!");
             }
             
             completeOrder();
         } catch (err) {
-            console.error("Email error:", err);
-            // ইমেইল না গেলেও হোয়াটসঅ্যাপ চলে গেছে, তাই অর্ডার সম্পন্ন হবে
+            console.error("Email failed but WhatsApp sent:", err);
             completeOrder();
         }
     });
