@@ -10,7 +10,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            // আপনার Public Key initialization
             if (typeof emailjs !== 'undefined') {
                 emailjs.init({
                     publicKey: "WnceGWWVztvV9vkRD",
@@ -123,11 +122,10 @@
         itemContainer.innerHTML = cart.map(item => {
             const price = parseInt(item.price) || 0;
             const qty = item.quantity || 1;
-            const itemTotal = price * qty;
-            subtotal += itemTotal;
+            subtotal += (price * qty);
             return `<div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px;">
                     <span>${item.name} x ${qty}</span>
-                    <span>৳ ${itemTotal}</span>
+                    <span>৳ ${price * qty}</span>
                 </div>`;
         }).join('');
         finalTotalAmount = subtotal + 60;
@@ -143,7 +141,6 @@
 
     document.getElementById('orderForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        
         const btn = document.getElementById('submitBtn');
         const name = document.getElementById('name').value;
         const phone = document.getElementById('phone').value;
@@ -163,41 +160,39 @@
             total: finalTotalAmount
         };
 
+        const completeOrder = () => {
+            alert("অর্ডার সফল হয়েছে!");
+            localStorage.removeItem('cart');
+            window.location.href = 'index.html';
+        };
+
+        // ১. হোয়াটসঅ্যাপে মেসেজ পাঠানো (এটি সবসময় কাজ করবে)
+        sendToWhatsApp(orderData);
+
+        // ২. ডাটাবেস এবং ইমেইল হ্যান্ডলিং (ব্যর্থ হলেও অর্ডার সম্পন্ন হবে)
         try {
-            // ১. এপিআই তে ডাটা পাঠানো (Render Server)
-            const apiRequest = fetch('https://decotech-api.onrender.com/api/orders', {
+            // API কল
+            fetch('https://decotech-api.onrender.com/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
-            });
+            }).catch(e => console.log("DB Error ignored"));
 
-            // ২. EmailJS দিয়ে ইমেইল পাঠানো
+            // ইমেইল পাঠানো (কোটা শেষ হলে এটি এরর দিবে, যা আমরা হ্যান্ডেল করেছি)
             if (typeof emailjs !== 'undefined') {
-                emailjs.send("service_qbtls6p", "template_7aca5go", {
+                await emailjs.send("service_qbtls6p", "template_7aca5go", {
                     to_name: name,
-                    to_email: email, // কাস্টমারের ইমেইল
+                    to_email: email,
                     order_details: orderData.products,
                     total_price: finalTotalAmount,
                     address: address,
                     customer_phone: phone
                 });
             }
-
-            // ৩. হোয়াটসঅ্যাপে রিডাইরেক্ট
-            sendToWhatsApp(orderData);
-
-            // অর্ডার সম্পন্ন করার প্রক্রিয়া
-            alert("অর্ডার সফল হয়েছে! আপনার ইমেইল চেক করুন।");
-            localStorage.removeItem('cart');
-            window.location.href = 'index.html';
-
+            completeOrder();
         } catch (err) {
-            console.error("Order error:", err);
-            // ব্যাকআপ হিসেবে হোয়াটসঅ্যাপ ওপেন রাখা
-            sendToWhatsApp(orderData);
-            alert("অর্ডার প্রসেস হয়েছে, হোয়াটসঅ্যাপ চেক করুন।");
-            localStorage.removeItem('cart');
-            window.location.href = 'index.html';
+            console.log("Email limit or server error, but WhatsApp sent.");
+            completeOrder();
         }
     });
 
@@ -210,7 +205,6 @@
         msg += `💰 *Total:* ৳${data.total}%0A`;
         msg += `💳 *Payment:* ${data.paymentMethod}%0A`;
         msg += `🛒 *Products:* ${data.products}`;
-
         const url = `https://wa.me/${adminNumber}?text=${msg}`;
         window.open(url, '_blank');
     }
