@@ -80,7 +80,9 @@
                             <th>অ্যাকশন</th>
                         </tr>
                     </thead>
-                    <tbody id="adminProductList"></tbody>
+                    <tbody id="adminProductList">
+                        <tr><td colspan="4" style="text-align:center;">লোড হচ্ছে...</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -100,7 +102,9 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="orderList"></tbody>
+                    <tbody id="orderList">
+                        <tr><td colspan="5" style="text-align:center;">লোড হচ্ছে...</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -117,14 +121,114 @@
             const products = await res.json();
             const list = document.getElementById('adminProductList');
             
-            if (products.length === 0) {
+            if (!products || products.length === 0) {
                 list.innerHTML = `<tr><td colspan="4" style="text-align:center;">কোন প্রোডাক্ট পাওয়া যায়নি।</td></tr>`;
                 return;
             }
 
             list.innerHTML = products.reverse().map(p => `
                 <tr>
-                    <td><img src="${p.image}" class="prod-img-small" onerror="this.src='https://placehold.co/40x40?text=No+Img'"></td>
+                    <td><img src="${p.image || p.imageUrl}" class="prod-img-small" onerror="this.src='https://placehold.co/40x40?text=No+Img'"></td>
                     <td><strong>${p.name}</strong><br><small>${p.category}</small></td>
                     <td>৳ ${p.price}</td>
-                    <td><i class="fas fa-trash-alt delete-btn"
+                    <td><i class="fas fa-trash-alt delete-btn" onclick="deleteProduct('${p._id}')"></i></td>
+                </tr>
+            `).join('');
+        } catch (err) { 
+            console.error("Load failed:", err); 
+            document.getElementById('adminProductList').innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">সার্ভার কানেকশন এরর!</td></tr>`;
+        }
+    }
+
+    // ২. প্রোডাক্ট যোগ করা
+    document.getElementById('addProductForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('addBtn');
+        btn.disabled = true;
+        btn.innerText = "সংরক্ষণ হচ্ছে...";
+
+        const productData = {
+            name: document.getElementById('pName').value,
+            category: document.getElementById('pCategory').value,
+            price: document.getElementById('pPrice').value,
+            image: document.getElementById('pImageURL').value
+        };
+
+        try {
+            const response = await fetch(apiURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(productData)
+            });
+            if (response.ok) {
+                alert("প্রোডাক্ট সফলভাবে যোগ করা হয়েছে!");
+                document.getElementById('addProductForm').reset();
+                loadProducts();
+            }
+        } catch (err) { 
+            alert("সার্ভার সমস্যা! আবার চেষ্টা করুন।"); 
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Upload to Shop";
+        }
+    };
+
+    // ৩. অর্ডার লোড করা
+    async function loadOrders() {
+        try {
+            const res = await fetch(orderURL);
+            const orders = await res.json();
+            const list = document.getElementById('orderList');
+            
+            if (!orders || orders.length === 0) {
+                list.innerHTML = `<tr><td colspan="5" style="text-align:center;">কোন অর্ডার পাওয়া যায়নি।</td></tr>`;
+                return;
+            }
+            
+            list.innerHTML = orders.reverse().map(order => {
+                const total = order.total || order.totalAmount || 0;
+                return `
+                <tr>
+                    <td><strong>${order.customerName || 'অজানা কাস্টমার'}</strong></td>
+                    <td>${order.phone || 'N/A'}<br><small style="color:#666">${order.address || 'N/A'}</small></td>
+                    <td>
+                        ${order.products || 'ডেটা পাওয়া যায়নি'}
+                        <br><span class="method-tag">${order.paymentMethod || 'Cash on Delivery'}</span>
+                    </td>
+                    <td><strong>৳ ${total}</strong></td>
+                    <td><i class="fas fa-trash-alt delete-btn" onclick="deleteOrder('${order._id}')"></i></td>
+                </tr>
+                `;
+            }).join('');
+        } catch (err) { 
+            console.error("Orders failed:", err); 
+            document.getElementById('orderList').innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">অর্ডার লোড করা সম্ভব হয়নি।</td></tr>`;
+        }
+    }
+
+    // ডিলিট ফাংশনসমূহ
+    async function deleteProduct(id) {
+        if (confirm("আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটি মুছতে চান?")) {
+            await fetch(`${apiURL}/${id}`, { method: 'DELETE' });
+            loadProducts();
+        }
+    }
+
+    async function deleteOrder(id) {
+        if (confirm("এই অর্ডারটি কি মুছে ফেলতে চান?")) {
+            await fetch(`${orderURL}/${id}`, { method: 'DELETE' });
+            loadOrders();
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem('isAdmin');
+        window.location.href = 'admin-login.html';
+    }
+
+    // প্রাথমিক লোড
+    loadProducts();
+    loadOrders();
+    </script>
+</body>
+</html>
