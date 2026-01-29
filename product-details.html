@@ -11,96 +11,112 @@
         :root { --primary: #004d40; --accent: #ff9800; --bg: #f8faf9; }
         body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); }
         
-        /* Navbar (Added for consistency) */
         nav { background: white; padding: 15px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .logo { font-size: 24px; font-weight: bold; color: var(--primary); text-decoration: none; }
         .logo span { color: var(--accent); }
 
-        .container { max-width: 1000px; margin: 60px auto; padding: 20px; display: flex; gap: 50px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .container { max-width: 1000px; margin: 60px auto; padding: 20px; display: flex; gap: 50px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); min-height: 400px; align-items: center; }
         .product-image { flex: 1; text-align: center; }
-        .product-image img { width: 100%; max-width: 450px; border-radius: 15px; transition: 0.5s; object-fit: cover; }
+        .product-image img { width: 100%; max-width: 450px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); object-fit: cover; }
         .product-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        .product-info h1 { color: var(--primary); margin-bottom: 10px; }
-        .price { font-size: 28px; font-weight: 700; color: var(--accent); margin-bottom: 20px; }
-        .desc { color: #666; line-height: 1.6; margin-bottom: 30px; }
-        .add-cart-btn { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 30px; cursor: pointer; font-size: 16px; font-weight: 600; transition: 0.3s; width: fit-content; }
-        .add-cart-btn:hover { background: #00332a; transform: scale(1.05); }
-        .back-link { margin-top: 20px; display: inline-block; color: var(--primary); text-decoration: none; font-size: 14px; }
+        .product-info h1 { color: var(--primary); margin: 0 0 10px; font-size: 28px; }
+        .price { font-size: 32px; font-weight: 700; color: var(--accent); margin-bottom: 20px; }
+        .desc { color: #555; line-height: 1.8; margin-bottom: 30px; font-size: 16px; }
+        .add-cart-btn { background: var(--primary); color: white; border: none; padding: 15px 35px; border-radius: 30px; cursor: pointer; font-size: 18px; font-weight: 600; transition: 0.3s; width: fit-content; display: flex; align-items: center; gap: 10px; }
+        .add-cart-btn:hover { background: #00332a; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,77,64,0.3); }
+        .back-link { margin-top: 25px; display: inline-block; color: var(--primary); text-decoration: none; font-size: 15px; font-weight: 500; }
+        .back-link:hover { text-decoration: underline; }
+
+        /* Loading Spinner */
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        @media (max-width: 768px) { .container { flex-direction: column; text-align: center; } .product-info { align-items: center; } }
+        @media (max-width: 768px) { .container { flex-direction: column; margin: 20px auto; text-align: center; } .product-info { align-items: center; } }
     </style>
 </head>
 <body>
 
     <nav>
         <a href="index.html" class="logo">Deco<span>Tech</span></a>
-        <a href="index.html" style="text-decoration: none; color: var(--primary); font-weight: 600;">Home</a>
+        <a href="index.html" style="text-decoration: none; color: var(--primary); font-weight: 600;"><i class="fas fa-home"></i> Home</a>
     </nav>
 
-    <div class="container reveal">
-        <div class="product-image" id="pImage">
-            <p>Loading image...</p>
-        </div>
-        <div class="product-info" id="pDetails">
-            <p>Loading details...</p>
+    <div class="container" id="main-content">
+        <div id="loading-state" style="width: 100%; text-align: center; padding: 50px;">
+            <div class="loader"></div>
+            <p style="margin-top: 15px; color: #666;">Waking up server, please wait...</p>
         </div>
     </div>
 
     <script>
-        // API URL updated to Render link
         const apiURL = 'https://decotech-api.onrender.com/api/products';
 
         async function loadDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            const mainContainer = document.getElementById('main-content');
+            
+            if (!id) {
+                window.location.href = 'index.html';
+                return;
+            }
+
             try {
-                const urlParams = new URLSearchParams(window.location.search);
-                const id = urlParams.get('id');
+                // Fetching with a timeout check
+                const response = await fetch(`${apiURL}/${id}`);
                 
-                if (!id) {
-                    window.location.href = 'index.html';
-                    return;
-                }
+                if (!response.ok) throw new Error("Product not found");
+                
+                const p = await response.json();
 
-                // Changed from localhost to live API
-                const res = await fetch(`${apiURL}/${id}`);
-                const p = await res.json();
-
-                if (!p || res.status !== 200) {
-                    document.getElementById('pDetails').innerHTML = "<h2>Product Not Found</h2>";
-                    return;
-                }
-
-                // Display Image
-                document.getElementById('pImage').innerHTML = `
-                    <img src="${p.image}" class="reveal-left" onerror="this.src='https://placehold.co/450x450?text=No+Image+Found'">
+                // Injecting HTML
+                mainContainer.innerHTML = `
+                    <div class="product-image">
+                        <img src="${p.image}" class="reveal-left" alt="${p.name}" onerror="this.src='https://placehold.co/450x450?text=No+Image+Found'">
+                    </div>
+                    <div class="product-info">
+                        <h1 class="reveal-right">${p.name}</h1>
+                        <p class="price">৳ ${p.price.toLocaleString()}</p>
+                        <p class="desc">${p.description || "DecoTech-er eii premium quality product-ti apnar jibon-ke korbe aro shohoj ebong sundor. Eti modern design ebong boushishto diye toiri."}</p>
+                        <button class="add-cart-btn" onclick="addToCart('${p.name}', ${p.price})">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Shop</a>
+                    </div>
                 `;
 
-                // Display Info
-                document.getElementById('pDetails').innerHTML = `
-                    <h1 class="reveal-right">${p.name}</h1>
-                    <p class="price">৳ ${p.price}</p>
-                    <p class="desc">${p.description || "DecoTech-er eii premium quality product-ti apnar jibon-ke korbe aro shohoj ebong sundor."}</p>
-                    <button class="add-cart-btn" onclick="addToCart('${p.name}', ${p.price})">
-                        <i class="fas fa-shopping-cart"></i> Add to Cart
-                    </button>
-                    <a href="index.html" class="back-link">← Back to Home</a>
-                `;
-
-                // Animations
+                // Re-trigger Animations
                 ScrollReveal().reveal('.reveal-left', { origin: 'left', distance: '50px', duration: 1000 });
                 ScrollReveal().reveal('.reveal-right', { origin: 'right', distance: '50px', duration: 1000 });
 
             } catch (err) {
-                console.error("Error loading product details:", err);
-                document.getElementById('pDetails').innerHTML = "<h2>Error connecting to server</h2>";
+                console.error("Error:", err);
+                mainContainer.innerHTML = `
+                    <div style="text-align: center; width: 100%; padding: 40px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 50px; color: #e74c3c;"></i>
+                        <h2 style="margin-top: 20px;">Server is still waking up!</h2>
+                        <p>Render-er free server 1 minute por por bondho hoye jay. Please page-ti refresh korun.</p>
+                        <button onclick="location.reload()" style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Try Again</button>
+                    </div>
+                `;
             }
         }
 
-        // Add to Cart Logic
         function addToCart(name, price) {
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             cart.push({ name, price });
             localStorage.setItem('cart', JSON.stringify(cart));
-            alert(name + " added to cart successfully!");
+            
+            // Success Message with Icon
+            const btn = document.querySelector('.add-cart-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+            btn.style.background = '#27ae60';
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = 'var(--primary)';
+            }, 2000);
         }
 
         loadDetails();
