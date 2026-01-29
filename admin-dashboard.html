@@ -9,31 +9,32 @@
     
     <style>
         :root { --primary: #004d40; --accent: #ff9800; --bg: #f0f2f5; }
-        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); }
+        body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; margin: 0; background: var(--bg); }
         .admin-nav { background: var(--primary); color: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; }
         .admin-nav a { color: white; text-decoration: none; font-weight: 600; }
-        .dashboard-container { max-width: 1100px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+        .dashboard-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
         .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         .card h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 10px; }
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
-        .input-group input, .input-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; box-sizing: border-box; }
-        .add-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .add-btn:hover { background: #00332a; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; }
-        th { background: #eee; padding: 15px; text-align: left; }
-        td { padding: 15px; border-bottom: 1px solid #eee; }
-        .delete-btn { color: #e74c3c; cursor: pointer; font-size: 18px; }
-        .prod-img-small { width: 50px; height: 50px; object-fit: cover; border-radius: 5px; }
+        .input-group input, .input-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        .add-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; margin-top: 10px; }
+        th { background: #f8f9fa; padding: 12px; text-align: left; font-size: 14px; color: #555; }
+        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+        .delete-btn { color: #e74c3c; cursor: pointer; font-size: 16px; }
+        .prod-img-small { width: 40px; height: 40px; object-fit: cover; border-radius: 5px; }
+        .method-tag { background: #e3f2fd; color: #1565c0; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; display: inline-block; margin-top: 5px; }
+        @media (max-width: 900px) { .dashboard-container { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
     <div class="admin-nav">
-        <div class="logo">DecoTech <span>Admin Panel</span></div>
+        <div class="logo">DecoTech <strong>Admin Panel</strong></div>
         <div>
-            <a href="index.html" style="margin-right: 20px;">View Website</a>
-            <a href="admin-login.html" style="color: #ff9800;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <a href="index.html" target="_blank" style="margin-right: 20px;">View Website</a>
+            <a href="#" onclick="logout()" style="color: #ff9800;"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </div>
 
@@ -58,48 +59,48 @@
                     <input type="number" id="pPrice" placeholder="1200" required>
                 </div>
                 <div class="input-group">
-                    <label>প্রোডাক্টের ছবি (Upload)</label>
-                    <input type="file" id="pImageFile" accept="image/*">
+                    <label>ছবি লিঙ্ক (Image URL)</label>
+                    <input type="text" id="pImageURL" placeholder="https://example.com/image.jpg" required>
                 </div>
-                <div class="input-group">
-                    <label>অথবা ছবি লিঙ্ক (Image URL)</label>
-                    <input type="text" id="pImageURL" placeholder="https://example.com/image.jpg">
-                </div>
-                <button type="submit" class="add-btn">Add Product</button>
+                <button type="submit" class="add-btn">Upload to Shop</button>
             </form>
         </div>
 
         <div class="card">
             <h3>বর্তমান প্রোডাক্টস</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ছবি</th>
-                        <th>নাম</th>
-                        <th>দাম</th>
-                        <th>অ্যাকশন</th>
-                    </tr>
-                </thead>
-                <tbody id="adminProductList"></tbody>
-            </table>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ছবি</th>
+                            <th>নাম</th>
+                            <th>দাম</th>
+                            <th>অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminProductList"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <div class="dashboard-container" style="grid-template-columns: 1fr;">
-        <div class="card" style="margin-top: 30px;">
+        <div class="card">
             <h3>আসা অর্ডারগুলো (Customer Orders)</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Customer</th>
-                        <th>Phone & Address</th>
-                        <th>Products</th>
-                        <th>Total</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="orderList"></tbody>
-            </table>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Phone & Address</th>
+                            <th>Products</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderList"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -107,130 +108,92 @@
     const apiURL = 'https://decotech-api.onrender.com/api/products';
     const orderURL = 'https://decotech-api.onrender.com/api/orders';
 
-    // ১. প্রোডাক্ট লোড করা (ওয়েবসাইট এবং ড্যাশবোর্ড উভয়ের জন্য)
+    // ১. প্রোডাক্ট লোড করা
     async function loadProducts() {
         try {
             const res = await fetch(apiURL);
             const products = await res.json();
             const list = document.getElementById('adminProductList');
-            
-            list.innerHTML = products.map(p => `
+            list.innerHTML = products.reverse().map(p => `
                 <tr>
-                    <td><img src="${p.image}" class="prod-img-small" onerror="this.src='https://placehold.co/50x50?text=No+Image'"></td>
-                    <td>${p.name} <br> <small style="color:gray">${p.category}</small></td>
+                    <td><img src="${p.image}" class="prod-img-small" onerror="this.src='https://placehold.co/40x40'"></td>
+                    <td><strong>${p.name}</strong><br><small>${p.category}</small></td>
                     <td>৳ ${p.price}</td>
                     <td><i class="fas fa-trash-alt delete-btn" onclick="deleteProduct('${p._id}')"></i></td>
                 </tr>
             `).join('');
-        } catch (err) {
-            console.error("Load failed:", err);
-        }
+        } catch (err) { console.error("Load failed:", err); }
     }
 
-    // ২. নতুন প্রোডাক্ট যোগ করা (ফাইল আপলোড এবং ইউআরএল হ্যান্ডলিং)
+    // ২. প্রোডাক্ট যোগ করা
     document.getElementById('addProductForm').onsubmit = async (e) => {
         e.preventDefault();
-        
-        const fileInput = document.getElementById('pImageFile');
-        const imageURL = document.getElementById('pImageURL').value.trim();
-        
-        // ফর্ম ডেটা তৈরি
-        const formData = new FormData();
-        formData.append('name', document.getElementById('pName').value);
-        formData.append('category', document.getElementById('pCategory').value);
-        formData.append('price', document.getElementById('pPrice').value);
-
-        if (fileInput.files.length > 0) {
-            // যদি ফাইল সিলেক্ট করা থাকে
-            formData.append('image', fileInput.files[0]);
-        } else if (imageURL !== "") {
-            // যদি সরাসরি লিাঙ্ক দেওয়া থাকে
-            formData.append('imageURL', imageURL);
-        } else {
-            alert("দয়া করে একটি ছবি আপলোড করুন অথবা ছবির লিংক দিন!");
-            return;
-        }
+        const productData = {
+            name: document.getElementById('pName').value,
+            category: document.getElementById('pCategory').value,
+            price: document.getElementById('pPrice').value,
+            image: document.getElementById('pImageURL').value
+        };
 
         try {
             const response = await fetch(apiURL, {
                 method: 'POST',
-                body: formData // সরাসরি ফর্ম ডেটা পাঠানো হচ্ছে
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(productData)
             });
-
             if (response.ok) {
-                alert("প্রোডাক্ট সফলভাবে যোগ করা হয়েছে!");
+                alert("প্রোডাক্ট যোগ করা হয়েছে!");
                 document.getElementById('addProductForm').reset();
                 loadProducts();
-            } else {
-                const errorData = await response.json();
-                alert("সমস্যা: " + (errorData.message || "ভুল হয়েছে"));
             }
-        } catch (err) {
-            console.error("Error adding product:", err);
-            alert("সার্ভারের সাথে সংযোগ করা যাচ্ছে না!");
-        }
+        } catch (err) { alert("সার্ভার সমস্যা!"); }
     };
 
-    // ৩. প্রোডাক্ট ডিলিট করা
-    async function deleteProduct(id) {
-        if (confirm("আপনি কি নিশ্চিতভাবে ডিলিট করতে চান?")) {
-            try {
-                const response = await fetch(`${apiURL}/${id}`, { 
-                    method: 'DELETE' 
-                });
-                if (response.ok) {
-                    alert("ডিলিট হয়েছে!");
-                    loadProducts();
-                }
-            } catch (err) {
-                console.error("Delete failed:", err);
-            }
-        }
-    }
-
-    // ৪. অর্ডার লোড করা
+    // ৩. অর্ডার লোড করা (FIXED UNDEFINED)
     async function loadOrders() {
         try {
             const res = await fetch(orderURL);
             const orders = await res.json();
             const list = document.getElementById('orderList');
             
-            list.innerHTML = orders.map(order => `
+            list.innerHTML = orders.reverse().map(order => `
                 <tr>
-                    <td><strong>${order.customerName}</strong></td>
-                    <td>${order.phone}<br><small>${order.address}</small></td>
-                    <td>${order.products.map(p => `${p.name} (x${p.quantity})`).join(', ')}</td>
-                    <td>৳${order.totalAmount}</td>
+                    <td><strong>${order.customerName || 'N/A'}</strong></td>
+                    <td>${order.phone || 'N/A'}<br><small style="color:#666">${order.address || 'N/A'}</small></td>
+                    <td>
+                        ${order.products || 'No items'}
+                        <br><span class="method-tag">${order.paymentMethod || 'COD'}</span>
+                    </td>
+                    <td><strong>৳ ${order.total || 0}</strong></td>
                     <td><i class="fas fa-trash-alt delete-btn" onclick="deleteOrder('${order._id}')"></i></td>
                 </tr>
             `).join('');
-        } catch (err) {
-            console.error("Orders load failed:", err);
+        } catch (err) { console.error("Orders failed:", err); }
+    }
+
+    // ডিলিট ফাংশনসমূহ
+    async function deleteProduct(id) {
+        if (confirm("প্রোডাক্টটি মুছতে চান?")) {
+            await fetch(`${apiURL}/${id}`, { method: 'DELETE' });
+            loadProducts();
         }
     }
 
-    // ৫. অর্ডার ডিলিট করা
     async function deleteOrder(id) {
-        if (confirm("অর্ডারটি ডিলিট করতে চান?")) {
-            try {
-                const response = await fetch(`${orderURL}/${id}`, { 
-                    method: 'DELETE' 
-                });
-                if (response.ok) {
-                    alert("অর্ডার ডিলিট হয়েছে!");
-                    loadOrders();
-                }
-            } catch (err) {
-                console.error("Delete failed:", err);
-            }
+        if (confirm("অর্ডারটি মুছতে চান?")) {
+            await fetch(`${orderURL}/${id}`, { method: 'DELETE' });
+            loadOrders();
         }
+    }
+
+    function logout() {
+        localStorage.removeItem('isAdmin');
+        window.location.href = 'admin-login.html';
     }
 
     // ইনিশিয়াল লোড
     loadProducts();
     loadOrders();
-</script>
+    </script>
 </body>
 </html>
-
-
