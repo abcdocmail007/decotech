@@ -104,148 +104,133 @@
     </div>
 
     <script>
-        const apiURL = 'https://decotech-api.onrender.com/api/products';
-        const orderURL = 'https://decotech-api.onrender.com/api/orders';
+    const apiURL = 'https://decotech-api.onrender.com/api/products';
+    const orderURL = 'https://decotech-api.onrender.com/api/orders';
 
-        // 1. Load Products
-        async function loadProducts() {
-            try {
-                const res = await fetch(apiURL);
-                const products = await res.json();
-                const list = document.getElementById('adminProductList');
-                
-                list.innerHTML = products.map(p => `
-                    <tr>
-                        <td><img src="${p.image}" class="prod-img-small" onerror="this.src='https://placehold.co/50x50?text=No+Image'"></td>
-                        <td>${p.name} <br> <small style="color:gray">${p.category}</small></td>
-                        <td>৳ ${p.price}</td>
-                        <td><i class="fas fa-trash-alt delete-btn" onclick="deleteProduct('${p._id}')"></i></td>
-                    </tr>
-                `).join('');
-            } catch (err) {
-                console.error("Load failed:", err);
-            }
-        }
-
-        // 2. Add Product
-        document.getElementById('addProductForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const formData = new FormData();
-            formData.append('name', document.getElementById('pName').value);
-            formData.append('category', document.getElementById('pCategory').value);
-            formData.append('price', document.getElementById('pPrice').value);
-            
-            const fileInput = document.getElementById('pImageFile');
-            const imageURL = document.getElementById('pImageURL').value;
-
-            if (fileInput.files.length > 0) {
-                formData.append('image', fileInput.files[0]);
-            } else if (imageURL.trim() !== "") {
-                formData.append('imageURL', imageURL);
-            } else {
-                alert("দয়া করে ছবি আপলোড করুন অথবা লিঙ্ক দিন");
-                return;
-            }
-
-            try {
-                const response = await fetch(apiURL, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if(response.ok) {
-                    alert("প্রোডাক্ট সফলভাবে যোগ করা হয়েছে!");
-                    document.getElementById('addProductForm').reset();
-                    loadProducts();
-                } else {
-                    const errorData = await response.json();
-                    alert("সমস্যা: " + (errorData.message || "Kichu ekta vul hoyeche"));
-                }
-            } catch (err) {
-                console.error("Error adding product:", err);
-                alert("Server-er shathe kotha bola jachche na!");
-            }
-        };
-
-        // 3. Delete Product (FIXED URL)
-        async function deleteProduct(id) {
-            if(confirm("আপনি কি এটি ডিলিট করতে চান?")) {
-                try {
-                    const response = await fetch(`${apiURL}/${id}`, { 
-                        method: 'DELETE' 
-                    });
-                    if(response.ok) {
-                        alert("Product Deleted!");
-                        loadProducts();
-                    } else {
-                        alert("Delete failed!");
-                    }
-                } catch (err) {
-                    console.error("Delete failed:", err);
-                }
-            }
-        }
-
-        // 4. Load Orders
-        async function loadOrders() {
-            try {
-                const res = await fetch(orderURL);
-                const orders = await res.json();
-                const list = document.getElementById('orderList');
-                
-                list.innerHTML = orders.map(order => `
-                    <tr>
-                        <td><strong>${order.customerName}</strong></td>
-                        <td>${order.phone}<br><small>${order.address}</small></td>
-                        <td>${order.products.map(p => `${p.name} (x${p.quantity})`).join(', ')}</td>
-                        <td>৳${order.totalAmount}</td>
-                        <td><i class="fas fa-trash-alt delete-btn" onclick="deleteOrder('${order._id}')"></i></td>
-                    </tr>
-                `).join('');
-            } catch (err) {
-                console.error("Orders load failed:", err);
-            }
-        }
-
-        // 5. Delete Order (FIXED URL)
-        async function deleteOrder(id) {
-            if(confirm("অর্ডারটি ডিলিট করতে চান?")) {
-                try {
-                    const response = await fetch(`${orderURL}/${id}`, { 
-                        method: 'DELETE' 
-                    });
-                    if(response.ok) {
-                        alert("Order Deleted!");
-                        loadOrders();
-                    }
-                } catch (err) {
-                    console.error("Delete failed:", err);
-                }
-            }
-        }
-
-        loadProducts();
-        loadOrders();
-
-        const apiURL = 'https://decotech-api.onrender.com/api/products';
-
-// Delete Function Fixed
-async function deleteProduct(id) {
-    if(confirm("Are you sure?")) {
+    // ১. প্রোডাক্ট লোড করা (ওয়েবসাইট এবং ড্যাশবোর্ড উভয়ের জন্য)
+    async function loadProducts() {
         try {
-            const response = await fetch(`${apiURL}/${id}`, { 
-                method: 'DELETE' 
-            });
-            if(response.ok) {
-                alert("Deleted!");
-                loadProducts(); // Refresh list
-            }
+            const res = await fetch(apiURL);
+            const products = await res.json();
+            const list = document.getElementById('adminProductList');
+            
+            list.innerHTML = products.map(p => `
+                <tr>
+                    <td><img src="${p.image}" class="prod-img-small" onerror="this.src='https://placehold.co/50x50?text=No+Image'"></td>
+                    <td>${p.name} <br> <small style="color:gray">${p.category}</small></td>
+                    <td>৳ ${p.price}</td>
+                    <td><i class="fas fa-trash-alt delete-btn" onclick="deleteProduct('${p._id}')"></i></td>
+                </tr>
+            `).join('');
         } catch (err) {
-            console.error("Delete failed:", err);
+            console.error("Load failed:", err);
         }
     }
-}
-    </script>
+
+    // ২. নতুন প্রোডাক্ট যোগ করা (ফাইল আপলোড এবং ইউআরএল হ্যান্ডলিং)
+    document.getElementById('addProductForm').onsubmit = async (e) => {
+        e.preventDefault();
+        
+        const fileInput = document.getElementById('pImageFile');
+        const imageURL = document.getElementById('pImageURL').value.trim();
+        
+        // ফর্ম ডেটা তৈরি
+        const formData = new FormData();
+        formData.append('name', document.getElementById('pName').value);
+        formData.append('category', document.getElementById('pCategory').value);
+        formData.append('price', document.getElementById('pPrice').value);
+
+        if (fileInput.files.length > 0) {
+            // যদি ফাইল সিলেক্ট করা থাকে
+            formData.append('image', fileInput.files[0]);
+        } else if (imageURL !== "") {
+            // যদি সরাসরি লিাঙ্ক দেওয়া থাকে
+            formData.append('imageURL', imageURL);
+        } else {
+            alert("দয়া করে একটি ছবি আপলোড করুন অথবা ছবির লিংক দিন!");
+            return;
+        }
+
+        try {
+            const response = await fetch(apiURL, {
+                method: 'POST',
+                body: formData // সরাসরি ফর্ম ডেটা পাঠানো হচ্ছে
+            });
+
+            if (response.ok) {
+                alert("প্রোডাক্ট সফলভাবে যোগ করা হয়েছে!");
+                document.getElementById('addProductForm').reset();
+                loadProducts();
+            } else {
+                const errorData = await response.json();
+                alert("সমস্যা: " + (errorData.message || "ভুল হয়েছে"));
+            }
+        } catch (err) {
+            console.error("Error adding product:", err);
+            alert("সার্ভারের সাথে সংযোগ করা যাচ্ছে না!");
+        }
+    };
+
+    // ৩. প্রোডাক্ট ডিলিট করা
+    async function deleteProduct(id) {
+        if (confirm("আপনি কি নিশ্চিতভাবে ডিলিট করতে চান?")) {
+            try {
+                const response = await fetch(`${apiURL}/${id}`, { 
+                    method: 'DELETE' 
+                });
+                if (response.ok) {
+                    alert("ডিলিট হয়েছে!");
+                    loadProducts();
+                }
+            } catch (err) {
+                console.error("Delete failed:", err);
+            }
+        }
+    }
+
+    // ৪. অর্ডার লোড করা
+    async function loadOrders() {
+        try {
+            const res = await fetch(orderURL);
+            const orders = await res.json();
+            const list = document.getElementById('orderList');
+            
+            list.innerHTML = orders.map(order => `
+                <tr>
+                    <td><strong>${order.customerName}</strong></td>
+                    <td>${order.phone}<br><small>${order.address}</small></td>
+                    <td>${order.products.map(p => `${p.name} (x${p.quantity})`).join(', ')}</td>
+                    <td>৳${order.totalAmount}</td>
+                    <td><i class="fas fa-trash-alt delete-btn" onclick="deleteOrder('${order._id}')"></i></td>
+                </tr>
+            `).join('');
+        } catch (err) {
+            console.error("Orders load failed:", err);
+        }
+    }
+
+    // ৫. অর্ডার ডিলিট করা
+    async function deleteOrder(id) {
+        if (confirm("অর্ডারটি ডিলিট করতে চান?")) {
+            try {
+                const response = await fetch(`${orderURL}/${id}`, { 
+                    method: 'DELETE' 
+                });
+                if (response.ok) {
+                    alert("অর্ডার ডিলিট হয়েছে!");
+                    loadOrders();
+                }
+            } catch (err) {
+                console.error("Delete failed:", err);
+            }
+        }
+    }
+
+    // ইনিশিয়াল লোড
+    loadProducts();
+    loadOrders();
+</script>
 </body>
 </html>
+
 
