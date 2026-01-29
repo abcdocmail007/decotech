@@ -10,7 +10,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            // EmailJS Initialization
             if (typeof emailjs !== 'undefined') {
                 emailjs.init({
                     publicKey: "WnceGWWVztvV9vkRD",
@@ -167,23 +166,21 @@
             window.location.href = 'index.html';
         };
 
-        // ১. হোয়াটসঅ্যাপে মেসেজ পাঠানো (আগে পাঠানো হচ্ছে যেন কোনো লস না হয়)
+        // ১. আধুনিক হোয়াটসঅ্যাপ মেসেজ পাঠানো
         sendToWhatsApp(orderData);
 
         // ২. ডাটাবেস এবং ইমেইল হ্যান্ডলিং
         try {
-            // API কল (Render Server)
             fetch('https://decotech-api.onrender.com/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
             }).catch(() => console.log("DB connection skip"));
 
-            // ইমেইল পাঠানো - ইমেইল না যাওয়া পর্যন্ত অপেক্ষা করবে
             if (typeof emailjs !== 'undefined') {
                 const templateParams = {
                     to_name: name,
-                    to_email: customer_email, // এখানে আপনার ইমেইল ভেরিয়েবল
+                    to_email: customer_email,
                     order_details: orderData.products,
                     total_price: finalTotalAmount,
                     address: address,
@@ -203,13 +200,24 @@
 
     function sendToWhatsApp(data) {
         const adminNumber = "8801778899326"; 
-        let msg = `🚀 *New Order - DecoTech*%0A%0A`;
-        msg += `👤 *Name:* ${data.customerName}%0A`;
-        msg += `📞 *Phone:* ${data.phone}%0A`;
-        msg += `📍 *Address:* ${data.address}%0A`;
-        msg += `💰 *Total:* ৳${data.total}%0A`;
-        msg += `💳 *Payment:* ${data.paymentMethod}%0A`;
-        msg += `🛒 *Products:* ${data.products}`;
+        
+        let msg = `🛍️ *NEW ORDER - DECOTECH* 🛍️%0A`;
+        msg += `━━━━━━━━━━━━━━━━━━%0A%0A`;
+        msg += `👤 *Customer Details:*%0A`;
+        msg += `┌ *Name:* ${data.customerName}%0A`;
+        msg += `├ *Phone:* ${data.phone}%0A`;
+        msg += `└ *Address:* ${data.address}%0A%0A`;
+        
+        msg += `🛒 *Order Summary:*%0A`;
+        msg += `_${data.products}_%0A%0A`;
+        
+        msg += `💰 *Payment Info:*%0A`;
+        msg += `┌ *Method:* ${data.paymentMethod}%0A`;
+        msg += `└ *Total Amount:* ৳${data.total}%0A%0A`;
+        
+        msg += `━━━━━━━━━━━━━━━━━━%0A`;
+        msg += `✅ *Please confirm the order!*`;
+
         const url = `https://wa.me/${adminNumber}?text=${msg}`;
         window.open(url, '_blank');
     }
