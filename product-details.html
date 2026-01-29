@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details | DecoTech</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -9,42 +10,99 @@
     <style>
         :root { --primary: #004d40; --accent: #ff9800; --bg: #f8faf9; }
         body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); }
+        
+        /* Navbar (Added for consistency) */
+        nav { background: white; padding: 15px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .logo { font-size: 24px; font-weight: bold; color: var(--primary); text-decoration: none; }
+        .logo span { color: var(--accent); }
+
         .container { max-width: 1000px; margin: 60px auto; padding: 20px; display: flex; gap: 50px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .product-image { flex: 1; }
-        .product-image img { width: 100%; border-radius: 15px; transition: 0.5s; }
-        .product-info { flex: 1; display: flex; flexDirection: column; justify-content: center; }
+        .product-image { flex: 1; text-align: center; }
+        .product-image img { width: 100%; max-width: 450px; border-radius: 15px; transition: 0.5s; object-fit: cover; }
+        .product-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
         .product-info h1 { color: var(--primary); margin-bottom: 10px; }
-        .price { font-size: 24px; font-weight: 700; color: var(--accent); margin-bottom: 20px; }
+        .price { font-size: 28px; font-weight: 700; color: var(--accent); margin-bottom: 20px; }
         .desc { color: #666; line-height: 1.6; margin-bottom: 30px; }
-        .add-cart-btn { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 30px; cursor: pointer; font-size: 16px; font-weight: 600; transition: 0.3s; }
+        .add-cart-btn { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 30px; cursor: pointer; font-size: 16px; font-weight: 600; transition: 0.3s; width: fit-content; }
         .add-cart-btn:hover { background: #00332a; transform: scale(1.05); }
-        @media (max-width: 768px) { .container { flex-direction: column; } }
+        .back-link { margin-top: 20px; display: inline-block; color: var(--primary); text-decoration: none; font-size: 14px; }
+        
+        @media (max-width: 768px) { .container { flex-direction: column; text-align: center; } .product-info { align-items: center; } }
     </style>
 </head>
 <body>
+
+    <nav>
+        <a href="index.html" class="logo">Deco<span>Tech</span></a>
+        <a href="index.html" style="text-decoration: none; color: var(--primary); font-weight: 600;">Home</a>
+    </nav>
+
     <div class="container reveal">
-        <div class="product-image" id="pImage"></div>
+        <div class="product-image" id="pImage">
+            <p>Loading image...</p>
+        </div>
         <div class="product-info" id="pDetails">
-            </div>
+            <p>Loading details...</p>
+        </div>
     </div>
 
     <script>
-        async function loadDetails() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id');
-            const res = await fetch(`http://localhost:5000/api/products/${id}`);
-            const p = await res.json();
+        // API URL updated to Render link
+        const apiURL = 'https://decotech-api.onrender.com/api/products';
 
-            document.getElementById('pImage').innerHTML = `<img src="${p.image}" class="reveal-left">`;
-            document.getElementById('pDetails').innerHTML = `
-                <h1 class="reveal-right">${p.name}</h1>
-                <p class="price">৳ ${p.price}</p>
-                <p class="desc">${p.description || "Premium quality product from DecoTech."}</p>
-                <button class="add-cart-btn" onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
-            `;
-            ScrollReveal().reveal('.reveal-left', { origin: 'left', distance: '50px', duration: 1000 });
-            ScrollReveal().reveal('.reveal-right', { origin: 'right', distance: '50px', duration: 1000 });
+        async function loadDetails() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const id = urlParams.get('id');
+                
+                if (!id) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // Changed from localhost to live API
+                const res = await fetch(`${apiURL}/${id}`);
+                const p = await res.json();
+
+                if (!p || res.status !== 200) {
+                    document.getElementById('pDetails').innerHTML = "<h2>Product Not Found</h2>";
+                    return;
+                }
+
+                // Display Image
+                document.getElementById('pImage').innerHTML = `
+                    <img src="${p.image}" class="reveal-left" onerror="this.src='https://placehold.co/450x450?text=No+Image+Found'">
+                `;
+
+                // Display Info
+                document.getElementById('pDetails').innerHTML = `
+                    <h1 class="reveal-right">${p.name}</h1>
+                    <p class="price">৳ ${p.price}</p>
+                    <p class="desc">${p.description || "DecoTech-er eii premium quality product-ti apnar jibon-ke korbe aro shohoj ebong sundor."}</p>
+                    <button class="add-cart-btn" onclick="addToCart('${p.name}', ${p.price})">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                    <a href="index.html" class="back-link">← Back to Home</a>
+                `;
+
+                // Animations
+                ScrollReveal().reveal('.reveal-left', { origin: 'left', distance: '50px', duration: 1000 });
+                ScrollReveal().reveal('.reveal-right', { origin: 'right', distance: '50px', duration: 1000 });
+
+            } catch (err) {
+                console.error("Error loading product details:", err);
+                document.getElementById('pDetails').innerHTML = "<h2>Error connecting to server</h2>";
+            }
         }
+
+        // Add to Cart Logic
+        function addToCart(name, price) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push({ name, price });
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(name + " added to cart successfully!");
+        }
+
         loadDetails();
     </script>
 </body>
