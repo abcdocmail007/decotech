@@ -10,7 +10,8 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            emailjs.init("YOUR_PUBLIC_KEY"); // এখানে আপনার EmailJS Public Key বসাবেন
+            // আপনার EmailJS Public Key এখানে বসান
+            emailjs.init("WnceGWWVztvV9vkRD"); 
         })();
     </script>
 
@@ -136,7 +137,6 @@
         element.classList.add('active');
     }
 
-    // অর্ডার হ্যান্ডলার
     document.getElementById('orderForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -168,36 +168,39 @@
             });
 
             if(res.ok) {
-                // ২. ইমেইল পাঠানো (EmailJS - Free)
-                // note: ইমেইল জেএস সেটআপ করা থাকলে এটি কাজ করবে
-                emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+                // ২. ইমেইল পাঠানো (EmailJS)
+                // আপনার Service ID এবং Template ID এখানে বসাবেন
+                emailjs.send("service_qbtls6p", "template_7aca5go", {
                     to_name: name,
                     to_email: email,
+                    order_id: Math.floor(100000 + Math.random() * 900000),
                     order_details: orderData.products,
                     total_price: finalTotalAmount,
-                    address: address
+                    payment_method: selectedPayment,
+                    address: address,
+                    customer_phone: phone
                 });
 
-                // ৩. হোয়াটসঅ্যাপে মেসেজ পাঠানো (Redirect - Free)
+                // ৩. হোয়াটসঅ্যাপে মেসেজ পাঠানো
                 sendToWhatsApp(orderData);
 
-                alert("অর্ডার সফল হয়েছে! আপনার ইমেইল এবং হোয়াটসঅ্যাপ চেক করুন।");
+                alert("অর্ডার সফল হয়েছে! আপনার ইমেইল এবং হোয়াটসঅ্যাপ চেক করুন।");
                 localStorage.removeItem('cart');
                 window.location.href = 'index.html';
             } else {
-                alert("অর্ডার দিতে সমস্যা হয়েছে।");
+                alert("অর্ডার দিতে সমস্যা হয়েছে।");
+                btn.disabled = false;
+                btn.innerText = "অর্ডার কনফার্ম করুন";
             }
         } catch (err) {
             alert("সার্ভার সমস্যা!");
-        } finally {
-            btn.innerText = "অর্ডার কনফার্ম করুন";
             btn.disabled = false;
+            btn.innerText = "অর্ডার কনফার্ম করুন";
         }
     });
 
-    // হোয়াটসঅ্যাপ মেসেজ লজিক
     function sendToWhatsApp(data) {
-        const adminNumber = "8801700000000"; // এখানে আপনার অ্যাডমিন বা গ্রুপ নাম্বার দিন
+        const adminNumber = "8801700000000"; // আপনার ফোন নাম্বার এখানে দিন
         let msg = `🚀 *New Order - DecoTech*%0A%0A`;
         msg += `👤 *Name:* ${data.customerName}%0A`;
         msg += `📞 *Phone:* ${data.phone}%0A`;
