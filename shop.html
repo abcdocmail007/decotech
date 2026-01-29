@@ -1,155 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DecoTech | Premium Collection</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://unpkg.com/scrollreveal"></script>
-
-    <style>
-        :root { --primary: #004d40; --accent: #ff9800; --bg: #f4f7f6; --white: #ffffff; }
-        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: #333; overflow-x: hidden; }
-
-        /* --- NAVBAR (Universal) --- */
-        nav { 
-            background: var(--white); padding: 15px 5%; display: flex; 
-            align-items: center; justify-content: space-between; 
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; 
-        }
-        .logo { font-size: 26px; font-weight: 700; color: var(--primary); text-decoration: none; }
-        .logo span { color: var(--accent); }
-        .nav-links { display: flex; gap: 20px; }
-        .nav-links a { text-decoration: none; color: #444; font-weight: 500; transition: 0.3s; }
-        .nav-links a:hover { color: var(--accent); }
-        
-        .search-container { position: relative; width: 250px; }
-        .search-container input { width: 100%; padding: 8px 35px 8px 15px; border-radius: 20px; border: 1px solid #ddd; outline: none; }
-        .search-container i { position: absolute; right: 12px; top: 10px; color: #888; }
-
-        /* --- PRODUCT GRID --- */
-        .container { max-width: 1200px; margin: 50px auto; padding: 0 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
-
-        /* CARD ANIMATION & STYLE */
-        .card { 
-            background: var(--white); border-radius: 15px; overflow: hidden; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.4s ease; 
-            position: relative; border: 1px solid #eee;
-        }
-        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 250px; object-fit: cover; transition: 0.5s; }
-        .card:hover img { transform: scale(1.1); }
-        .info { padding: 20px; text-align: center; }
-        .price { font-size: 20px; font-weight: 700; color: var(--primary); margin: 10px 0; }
-        .buy-btn { 
-            background: var(--primary); color: white; border: none; padding: 12px; 
-            width: 100%; border-radius: 8px; cursor: pointer; font-weight: 600; 
-            transition: 0.3s;
-        }
-        .buy-btn:hover { background: #00332a; box-shadow: 0 5px 15px rgba(0,77,64,0.3); }
-
-        /* --- FOOTER --- */
-        footer { background: var(--primary); color: white; padding: 60px 5% 20px; margin-top: 100px; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
-        .footer-logo h2 { color: var(--accent); margin-bottom: 10px; }
-        .footer-bottom { text-align: center; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px; padding-top: 20px; opacity: 0.6; }
-    </style>
-</head>
-<body>
-
-    <nav>
-        <a href="index.html" class="logo">Deco<span>Tech</span></a>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="shop.html">Shop</a>
-            <a href="gadgets.html">Gadgets</a>
-            <a href="decor.html">Decor</a>
-            <a href="clothing.html">Clothing</a>
-        </div>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search..." onkeyup="search()">
-            <i class="fa fa-search"></i>
-        </div>
-        <div style="font-size: 20px; color: var(--primary); cursor: pointer;">
-            <i class="fa fa-shopping-cart"></i>
-        </div>
-    </nav>
-
-    <div class="container">
-        <h1 id="pageTitle" style="text-align: center; margin-bottom: 40px; color: var(--primary);">Loading...</h1>
-        <div id="productList" class="grid"></div>
-    </div>
-
-    <footer>
-        <div class="footer-grid">
-            <div class="footer-logo">
-                <h2>DecoTech</h2>
-                <p>Amader uddessho apnar ghor-ke modern gadgets ebong decor diye shajiye tola.</p>
-            </div>
-            <div>
-                <h4>Quick Links</h4>
-                <a href="#" style="color:white; display:block; margin-bottom:10px;">Track Order</a>
-                <a href="#" style="color:white; display:block; margin-bottom:10px;">Privacy Policy</a>
-            </div>
-            <div>
-                <h4>Contact Us</h4>
-                <p><i class="fa fa-envelope"></i> support@decotech.com</p>
-                <p><i class="fa fa-phone"></i> +880 1234-567890</p>
-            </div>
-        </div>
-        <div class="footer-bottom">© 2026 DecoTech. All Rights Reserved.</div>
-    </footer>
-
-    <script>
-        // API theke product load korar function
-        async function fetchAndDisplay(categoryFilter = "All") {
-            document.getElementById('pageTitle').innerText = categoryFilter + " Collection";
-            const res = await fetch('http://localhost:5000/api/products');
+<script>
+    async function loadAllProducts() {
+        try {
+            // আপনার লাইভ এপিআই লিঙ্ক
+            const res = await fetch('https://decotech-api.onrender.com/api/products');
             const products = await res.json();
 
-            let filtered = products;
-            if(categoryFilter !== "All") {
-                filtered = products.filter(p => p.category === categoryFilter);
+            const container = document.getElementById('shopProductList'); // আপনার HTML এর ID অনুযায়ী ঠিক করে নিন
+            
+            if (products.length === 0) {
+                container.innerHTML = '<p>বর্তমানে কোনো প্রোডাক্ট নেই।</p>';
+                return;
             }
 
-            const list = document.getElementById('productList');
-            list.innerHTML = filtered.map(p => `
-                <div class="card reveal">
-                    <img src="${p.image}">
-                    <div class="info">
-                        <h3>${p.name}</h3>
-                        <div class="price">৳ ${p.price}</div>
-                        <button class="buy-btn">Add to Cart</button>
-                    </div>
+            container.innerHTML = products.map(p => `
+                <div class="product-card">
+                    <img src="${p.image || p.imageUrl}" alt="${p.name}">
+                    <h3>${p.name}</h3>
+                    <p class="category">${p.category}</p>
+                    <p class="price">৳ ${p.price}</p>
+                    <button onclick="addToCart('${p.name}', ${p.price}, '${p.image || p.imageUrl}')">Add to Cart</button>
                 </div>
             `).join('');
 
-            // Animation Trigger
-            ScrollReveal().reveal('.reveal', { 
-                distance: '50px', 
-                duration: 1000, 
-                easing: 'ease-in-out', 
-                origin: 'bottom', 
-                interval: 200 
-            });
+        } catch (err) {
+            console.error("Error loading products:", err);
+            document.getElementById('shopProductList').innerHTML = '<p>প্রোডাক্ট লোড করতে সমস্যা হয়েছে।</p>';
         }
+    }
 
-        // Search Function
-        function search() {
-            let input = document.getElementById('searchInput').value.toLowerCase();
-            let cards = document.getElementsByClassName('card');
-            for (let card of cards) {
-                let name = card.getElementsByTagName('h3')[0].innerText.toLowerCase();
-                card.style.display = name.includes(input) ? "block" : "none";
-            }
+    // পেজ লোড হলে কল হবে
+    loadAllProducts();
+
+    function addToCart(name, price, image) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let existingItem = cart.find(item => item.name === name);
+        
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            // নিশ্চিত করুন যে প্রাইসটি নাম্বার হিসেবে যাচ্ছে
+            cart.push({ name, price: Number(price), image, quantity: 1 });
         }
-
-        // Page onujayi data load kora
-        // shop.html hole "All", gadgets.html hole "Gadget" ityadi pathaben
-        fetchAndDisplay("All"); 
-    </script>
-</body>
-</html>
+        
+        localStorage.setItem('cart', JSON.stringify(cart));
+        alert(name + " কার্টে যোগ হয়েছে!");
+    }
+</script>
