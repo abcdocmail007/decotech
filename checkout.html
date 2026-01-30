@@ -112,6 +112,13 @@
     let selectedPayment = 'Cash on Delivery';
     let finalTotalAmount = 0;
 
+    // ১. ইউনিক অর্ডার আইডি তৈরির ফাংশন
+    function generateOrderID() {
+        const timestamp = Date.now().toString().slice(-4);
+        const random = Math.floor(1000 + Math.random() * 9000);
+        return `DT-${timestamp}${random}`;
+    }
+
     function renderSummary() {
         const itemContainer = document.getElementById('orderItems');
         let subtotal = 0;
@@ -142,6 +149,7 @@
     document.getElementById('orderForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
+        const orderId = generateOrderID(); // আইডি জেনারেট হলো
         const name = document.getElementById('name').value;
         const phone = document.getElementById('phone').value;
         const customer_email = document.getElementById('email').value;
@@ -151,6 +159,7 @@
         btn.disabled = true;
 
         const orderData = {
+            orderID: orderId,
             customerName: name,
             phone: phone,
             email: customer_email,
@@ -161,24 +170,24 @@
         };
 
         const completeOrder = () => {
-            alert("অর্ডার সফল হয়েছে! আপনার ইমেইল (Spam ফোল্ডারসহ) চেক করুন।");
+            alert(`অর্ডার সফল! আপনার আইডি: ${orderId}`);
             localStorage.removeItem('cart');
             window.location.href = 'index.html';
         };
 
-        // ১. আধুনিক হোয়াটসঅ্যাপ মেসেজ পাঠানো
+        // আধুনিক হোয়াটসঅ্যাপ মেসেজ পাঠানো (আইডি সহ)
         sendToWhatsApp(orderData);
 
-        // ২. ডাটাবেস এবং ইমেইল হ্যান্ডলিং
         try {
             fetch('https://decotech-api.onrender.com/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
-            }).catch(() => console.log("DB connection skip"));
+            }).catch(() => console.log("DB skip"));
 
             if (typeof emailjs !== 'undefined') {
                 const templateParams = {
+                    order_id: orderId, // ইমেইল টেমপ্লেটে এই আইডি দেখাবে
                     to_name: name,
                     to_email: customer_email,
                     order_details: orderData.products,
@@ -188,35 +197,30 @@
                 };
 
                 await emailjs.send("service_qbtls6p", "template_7aca5go", templateParams);
-                console.log("Email Success!");
             }
             
             completeOrder();
         } catch (err) {
-            console.error("Email failed but WhatsApp sent:", err);
             completeOrder();
         }
     });
 
     function sendToWhatsApp(data) {
         const adminNumber = "8801778899326"; 
-        
         let msg = `🛍️ *NEW ORDER - DECOTECH* 🛍️%0A`;
-        msg += `━━━━━━━━━━━━━━━━━━%0A%0A`;
+        msg += `━━━━━━━━━━━━━━━━━━%0A`;
+        msg += `🆔 *Order ID:* ${data.orderID}%0A%0A`; // আইডি এখানে যোগ করা হয়েছে
         msg += `👤 *Customer Details:*%0A`;
         msg += `┌ *Name:* ${data.customerName}%0A`;
         msg += `├ *Phone:* ${data.phone}%0A`;
         msg += `└ *Address:* ${data.address}%0A%0A`;
-        
         msg += `🛒 *Order Summary:*%0A`;
         msg += `_${data.products}_%0A%0A`;
-        
         msg += `💰 *Payment Info:*%0A`;
         msg += `┌ *Method:* ${data.paymentMethod}%0A`;
         msg += `└ *Total Amount:* ৳${data.total}%0A%0A`;
-        
         msg += `━━━━━━━━━━━━━━━━━━%0A`;
-        msg += `✅ *Please confirm the order!*`;
+        msg += `✅ *Confirm the order!*`;
 
         const url = `https://wa.me/${adminNumber}?text=${msg}`;
         window.open(url, '_blank');
