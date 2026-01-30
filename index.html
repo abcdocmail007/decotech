@@ -5,25 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DecoTech | Premium Lifestyle Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        :root { 
-            --primary: #004d40; --accent: #ff9800; --light: #f4f7f6; 
-            --white: #ffffff; --success: #2ecc71; --dark-text: #333;
-            --card-bg: #ffffff;
+        :root { --primary: #004d40; --accent: #ff9800; --light: #f4f7f6; --white: #ffffff; --success: #2ecc71; --text: #333; }
+        
+        /* --- DARK MODE STYLES --- */
+        body.dark-mode { 
+            --light: #121212; --white: #1e1e1e; --text: #e0e0e0; --primary: #1de9b6; 
         }
 
-        /* --- DARK MODE VARIABLES --- */
-        body.dark-mode {
-            --light: #121212; --white: #1e1e1e; --dark-text: #e0e0e0;
-            --card-bg: #252525; --primary: #1de9b6;
-        }
-
-        body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; margin: 0; background: var(--light); color: var(--dark-text); overflow-x: hidden; transition: 0.3s; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--light); color: var(--text); overflow-x: hidden; transition: 0.3s; }
 
         /* --- PRO PRELOADER --- */
-        #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
+        #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: 0.5s; }
         .loader-logo { font-size: 30px; font-weight: 800; color: var(--primary); margin-bottom: 15px; animation: pulse 1.5s infinite; }
         .loader-logo span { color: var(--accent); }
         .loader-bar { width: 150px; height: 4px; background: #eee; border-radius: 10px; overflow: hidden; }
@@ -32,63 +27,81 @@
         @keyframes load { 0% { width: 0%; } 100% { width: 100%; } }
 
         /* --- Toast Notification --- */
-        #toast-container { position: fixed; bottom: 30px; left: 20px; z-index: 10000; }
-        .toast { background: var(--white); color: var(--dark-text); padding: 12px 25px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; border-left: 5px solid var(--success); transform: translateX(-120%); transition: 0.5s; }
+        #toast-container { position: fixed; bottom: 100px; left: 20px; z-index: 9999; }
+        .toast { background: var(--white); color: var(--text); padding: 12px 25px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; border-left: 5px solid var(--success); transform: translateX(-120%); transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
         .toast.show { transform: translateX(0); }
+        .toast i { color: var(--success); font-size: 20px; }
 
-        /* --- Navbar --- */
-        nav { background: var(--white); backdrop-filter: blur(10px); padding: 12px 7%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 26px; font-weight: 700; color: var(--primary); text-decoration: none; }
+        /* --- Navbar & Search --- */
+        nav { background: var(--white); backdrop-filter: blur(10px); padding: 10px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 26px; font-weight: 700; color: var(--primary); text-decoration: none; min-width: 150px; }
         .logo span { color: var(--accent); }
         .nav-links { display: flex; align-items: center; gap: 20px; }
-        .nav-links a { text-decoration: none; color: var(--dark-text); font-weight: 500; transition: 0.3s; }
+        .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; transition: 0.3s; font-size: 15px; }
         .nav-links a:hover { color: var(--accent); }
         
-        .nav-actions { display: flex; align-items: center; gap: 15px; }
-        #darkModeToggle { background: none; border: none; color: var(--dark-text); cursor: pointer; font-size: 20px; }
+        /* Dark Mode Toggle Button */
+        #modeBtn { background: none; border: none; color: var(--text); cursor: pointer; font-size: 18px; margin-left: 15px; transition: 0.3s; }
+        #modeBtn:hover { color: var(--accent); }
+
+        .dropdown { position: relative; display: inline-block; }
+        .dropbtn { cursor: pointer; display: flex; align-items: center; gap: 5px; color: var(--text); }
+        .dropdown-content { display: none; position: absolute; background-color: var(--white); min-width: 160px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1); border-radius: 8px; z-index: 1; top: 100%; }
+        .dropdown-content a { color: var(--text); padding: 12px 16px; display: block; border-bottom: 1px solid #eee; margin: 0; }
+        .dropdown-content a:hover { background-color: var(--light); border-radius: 8px; }
+        .dropdown:hover .dropdown-content { display: block; }
+        
+        .search-container { position: relative; margin-left: 20px; }
+        .search-container input { padding: 8px 35px 8px 15px; border-radius: 20px; border: 1px solid #ddd; outline: none; width: 180px; transition: 0.3s; background: var(--white); color: var(--text); }
+        .search-container input:focus { width: 250px; border-color: var(--accent); }
+        .search-container i { position: absolute; right: 12px; top: 10px; color: #888; cursor: pointer; }
 
         /* --- Hero Banner --- */
-        .hero { height: 600px; background: linear-gradient(135deg, rgba(0,77,64,0.8), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1513161455079-7dc1de15ef3e?q=80&w=1974&auto=format&fit=crop'); background-size: cover; background-position: center; display: flex; align-items: center; color: white; padding: 0 10%; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); }
-        .hero h1 { font-size: 60px; margin: 0; font-family: 'Hind Siliguri'; }
-        .hero p { font-size: 20px; margin: 20px 0; opacity: 0.9; }
-        .hero-btn { background: var(--accent); color: white; padding: 15px 35px; border-radius: 30px; text-decoration: none; font-weight: 600; display: inline-block; transition: 0.3s; }
-        .hero-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,152,0,0.3); }
+        .hero { height: 550px; background: linear-gradient(135deg, rgba(0,77,64,0.85), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: flex-start; color: white; padding: 0 10%; position: relative; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); }
+        .hero h1 { font-size: 55px; margin: 0; line-height: 1.1; font-weight: 700; }
+        .hero p { font-size: 20px; margin: 20px 0 30px; opacity: 0.9; }
+        .hero-btn { background: var(--accent); color: white; padding: 15px 35px; border-radius: 30px; text-decoration: none; font-weight: 600; transition: 0.3s; box-shadow: 0 4px 15px rgba(255,152,0,0.4); display: inline-block; }
+        .hero-btn:hover { background: #e68900; transform: translateY(-3px); }
 
-        /* --- Feedback Section (Beautiful Update) --- */
-        .review-section { padding: 80px 10%; background: var(--white); margin: 50px 0; border-radius: 50px 50px 0 0; }
-        .review-container { display: grid; grid-template-columns: 1fr 2fr; gap: 50px; align-items: start; }
-        .review-form { background: var(--light); padding: 30px; border-radius: 20px; position: sticky; top: 120px; }
-        .review-form h3 { margin-top: 0; color: var(--primary); }
-        .review-form input, .review-form textarea { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #ddd; background: var(--white); color: var(--dark-text); outline: none; }
-        .star-input { font-size: 22px; color: #ccc; margin-bottom: 15px; cursor: pointer; }
+        /* --- Trust Badges --- */
+        .trust-badges { display: flex; justify-content: space-around; padding: 40px 5%; background: var(--white); margin: -30px auto 0; position: relative; z-index: 10; border-radius: 15px; max-width: 1000px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .badge-item { text-align: center; }
+        .badge-item i { font-size: 30px; color: var(--primary); margin-bottom: 10px; }
+        .badge-item p { margin: 0; font-weight: 600; font-size: 14px; color: var(--text); }
+        .badge-item span { font-size: 12px; color: #888; }
+
+        /* --- Products Grid --- */
+        .section-title { text-align: center; margin: 80px 0 40px; font-size: 32px; color: var(--primary); }
+        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; padding: 0 20px; }
+        .card { background: var(--white); border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; text-align: center; border: 1px solid #eee; position: relative; }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 240px; object-fit: cover; transition: 0.5s; }
+        .card h3 { margin: 10px 0; font-size: 18px; color: var(--text); padding: 0 10px; }
+        .price { font-size: 20px; font-weight: 700; color: var(--primary); margin-bottom: 15px; }
+        .buy-btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 30px; cursor: pointer; font-weight: 600; width: 90%; margin-bottom: 15px; transition: 0.3s; }
+        .buy-btn:hover { background: var(--accent); }
+
+        /* --- CUSTOMER FEEDBACK (SUNDOR DESIGN) --- */
+        .review-section { padding: 60px 5%; background: var(--white); margin-top: 50px; border-radius: 30px 30px 0 0; }
+        .review-box { max-width: 600px; margin: 0 auto 50px; background: var(--light); padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .review-box textarea { width: 100%; padding: 15px; margin-top: 15px; border: 1px solid #ddd; border-radius: 10px; background: var(--white); color: var(--text); outline: none; resize: none; }
+        .star-input i { font-size: 24px; color: #ccc; cursor: pointer; transition: 0.2s; }
         .star-input i.active { color: var(--accent); }
-        .post-btn { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: 600; }
+        .post-btn { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-weight: 600; margin-top: 15px; width: 100%; transition: 0.3s; }
+        .post-btn:hover { background: var(--accent); transform: scale(1.02); }
+        
+        #reviewList { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: auto; }
+        .review-card { background: var(--light); padding: 20px; border-radius: 15px; border-top: 4px solid var(--accent); box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
 
-        .review-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .review-card { background: var(--light); padding: 20px; border-radius: 15px; border-left: 5px solid var(--accent); transition: 0.3s; }
-        .review-card:hover { transform: translateY(-5px); }
-        .rev-user { font-weight: 700; display: block; margin: 10px 0 5px; }
-        .rev-stars { color: var(--accent); font-size: 14px; }
+        /* --- Floating WhatsApp & Footer --- */
+        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background-color: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 2px 5px 15px rgba(0,0,0,0.3); z-index: 1000; text-decoration: none; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
 
-        /* --- WhatsApp & Footer --- */
-        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none; }
-        footer { background: #111; color: #888; padding: 80px 10% 30px; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
-        .footer-grid h4 { color: white; margin-bottom: 20px; }
-        .footer-bottom { border-top: 1px solid #333; margin-top: 50px; padding-top: 20px; text-align: center; font-size: 13px; }
-
-        /* Product Grid */
-        .container { max-width: 1200px; margin: 50px auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; padding: 0 20px; }
-        .card { background: var(--card-bg); border-radius: 15px; padding: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; }
-        .card:hover { transform: translateY(-10px); }
-        .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; }
-        .buy-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; margin-top: 15px; width: 100%; }
-
-        @media (max-width: 768px) {
-            .review-container { grid-template-columns: 1fr; }
-            .hero h1 { font-size: 40px; }
-            .nav-links { display: none; }
-        }
+        footer { background: var(--primary); color: white; padding: 60px 5% 30px; margin-top: 50px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; }
+        .footer-logo { font-size: 28px; font-weight: 700; color: white; text-decoration: none; display: block; margin-bottom: 15px; }
+        .footer-logo span { color: var(--accent); }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; opacity: 0.7; }
     </style>
 </head>
 <body>
@@ -104,118 +117,129 @@
     <a href="index.html" class="logo">Deco<span>Tech</span></a>
     <div class="nav-links">
         <a href="index.html">Home</a>
-        <a href="gadgets.html">Gadgets</a>
-        <a href="decor.html">Decor</a>
-        <a href="clothing.html">Clothing</a>
-        <a href="contact.html">Contact</a>
+        <div class="dropdown">
+            <span class="dropbtn">Shop <i class="fa fa-chevron-down" style="font-size: 10px;"></i></span>
+            <div class="dropdown-content">
+                <a href="gadgets.html">Gadgets</a>
+                <a href="decor.html">Decor</a>
+                <a href="clothing.html">Clothing</a>
+            </div>
+        </div>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact Us</a>
+        <button id="modeBtn"><i class="fas fa-moon"></i></button>
     </div>
-    <div class="nav-actions">
-        <button id="darkModeToggle"><i class="fas fa-moon"></i></button>
-        <a href="cart.html" style="color: var(--primary); font-size: 22px; position: relative; text-decoration: none;">
-            <i class="fa fa-shopping-bag"></i>
-            <span id="cartCount" style="position: absolute; top: -10px; right: -10px; background: var(--accent); color: white; font-size: 10px; padding: 2px 6px; border-radius: 50%;">0</span>
+    <div style="display: flex; align-items: center;">
+        <div class="search-container">
+            <input type="text" id="mainSearch" placeholder="Search products..." onkeyup="searchProduct()">
+            <i class="fa fa-search"></i>
+        </div>
+        <a href="cart.html" style="color: var(--primary); font-size: 22px; position: relative; margin-left: 25px; text-decoration: none;">
+            <i class="fa fa-shopping-cart"></i>
+            <span id="cartCount" style="position: absolute; top: -12px; right: -12px; background: var(--accent); color: white; font-size: 10px; padding: 2px 6px; border-radius: 50%; font-weight: bold;">0</span>
         </a>
     </div>
 </nav>
 
 <div class="hero">
     <div class="hero-content">
-        <h1>আধুনিক লাইফস্টাইল <br>এখন আপনার হাতের মুঠোয়।</h1>
-        <p>Premium Gadgets & Aesthetic Home Decor Collection.</p>
-        <a href="shop.html" class="hero-btn">শপিং শুরু করুন <i class="fa fa-arrow-right"></i></a>
+        <h1>Elevate Your <br>Lifestyle Decor.</h1>
+        <p>Discover a curated collection of premium gadgets and aesthetic home decor designed for modern living.</p>
+        <a href="gadgets.html" class="hero-btn">Explore Collection <i class="fa fa-arrow-right"></i></a>
     </div>
 </div>
 
-<h2 style="text-align: center; margin-top: 60px; color: var(--primary);">Featured Products</h2>
+<div class="trust-badges">
+    <div class="badge-item"><i class="fas fa-shipping-fast"></i><p>Free Shipping</p><span>On orders over ৳৫০০০</span></div>
+    <div class="badge-item"><i class="fas fa-undo"></i><p>Easy Returns</p><span>7-day return policy</span></div>
+    <div class="badge-item"><i class="fas fa-shield-alt"></i><p>Secure Payment</p><span>100% secure checkout</span></div>
+</div>
+
+<h2 class="section-title">Featured Collections</h2>
 <div class="container" id="productList">
-    </div>
+    <p style="text-align: center; grid-column: 1/-1;">Fetching the best for you...</p>
+</div>
 
 <section class="review-section">
-    <h2 style="text-align: center; color: var(--primary); margin-bottom: 40px;">What Our Customers Say</h2>
-    <div class="review-container">
-        <div class="review-form">
-            <h3>Share Your Experience</h3>
-            <input type="text" id="revName" placeholder="Your Name">
-            <div class="star-input" id="starInput">
-                <i class="fa-solid fa-star" data-value="1"></i>
-                <i class="fa-solid fa-star" data-value="2"></i>
-                <i class="fa-solid fa-star" data-value="3"></i>
-                <i class="fa-solid fa-star" data-value="4"></i>
-                <i class="fa-solid fa-star" data-value="5"></i>
-            </div>
+    <h2 style="text-align: center; color: var(--primary); margin-bottom: 30px;">Customer Feedback</h2>
+    <div class="review-box">
+        <input type="text" id="revName" placeholder="Full Name" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; background: var(--white); color: var(--text);">
+        <div class="star-input" id="starInput" style="margin-top: 15px;">
+            <i class="fa-solid fa-star" data-value="1"></i>
+            <i class="fa-solid fa-star" data-value="2"></i>
+            <i class="fa-solid fa-star" data-value="3"></i>
+            <i class="fa-solid fa-star" data-value="4"></i>
+            <i class="fa-solid fa-star" data-value="5"></i>
             <input type="hidden" id="selectedRating" value="5">
-            <textarea id="revText" placeholder="Write your feedback here..." rows="4"></textarea>
-            <button class="post-btn" onclick="addReview()">Post Review</button>
         </div>
-
-        <div class="review-grid" id="reviewList">
-            <div class="review-card">
-                <div class="rev-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                <span class="rev-user">Rahat Khan</span>
-                <p>"The home decor items are truly aesthetic! High quality and fast delivery."</p>
-            </div>
-        </div>
+        <textarea id="revText" placeholder="How was your experience with DecoTech?" rows="3"></textarea>
+        <button class="post-btn" onclick="addReview()">Submit Review</button>
     </div>
+    <div id="reviewList"></div>
 </section>
 
 <a href="https://wa.me/8801778899326" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
 <footer>
     <div class="footer-grid">
-        <div>
-            <h4 style="font-size: 24px;">Deco<span>Tech</span></h4>
-            <p>Your one-stop shop for premium lifestyle gadgets and home aesthetics.</p>
+        <div class="footer-info">
+            <a href="index.html" class="footer-logo">Deco<span>Tech</span></a>
+            <p><i class="fa fa-map-marker-alt"></i> Level 4, Tech Plaza, Sherpur, Rajshahi, BD</p>
+            <p><i class="fa fa-envelope"></i> support@decotech.com</p>
         </div>
         <div>
             <h4>Quick Links</h4>
-            <a href="shop.html" style="color: #888; text-decoration: none; display: block; margin-bottom: 10px;">Shop All</a>
-            <a href="contact.html" style="color: #888; text-decoration: none; display: block;">Support</a>
+            <p><a href="gadgets.html" style="color:white; text-decoration:none; opacity:0.8;">Gadgets</a></p>
+            <p><a href="decor.html" style="color:white; text-decoration:none; opacity:0.8;">Home Decor</a></p>
         </div>
         <div>
-            <h4>Contact Info</h4>
-            <p><i class="fa fa-phone"></i> +880 1778-899326</p>
-            <p><i class="fa fa-envelope"></i> info@decotech.com</p>
+            <h4>Service Hours</h4>
+            <p style="opacity:0.8;">Sat - Thu: 10:00 AM - 08:00 PM</p>
         </div>
     </div>
     <div class="footer-bottom">
-        &copy; 2026 DecoTech. Designed for Modern Living.
-        <div id="liveClock" style="margin-top: 10px; color: var(--accent);"></div>
+        <div>&copy; 2026 DecoTech. All Rights Reserved.</div>
+        <div id="liveClock">Loading time...</div>
     </div>
 </footer>
 
 <script>
     const apiURL = 'https://decotech-api.onrender.com/api/products';
 
-    // --- Preloader ---
-    window.onload = () => {
+    window.addEventListener('load', function() {
+        const preloader = document.getElementById('preloader');
         setTimeout(() => {
-            document.getElementById('preloader').style.display = 'none';
+            preloader.style.opacity = '0';
+            setTimeout(() => { preloader.style.display = 'none'; }, 500);
         }, 1000);
-        loadProducts();
-        updateCartCount();
-        initDarkMode();
-    };
+    });
 
-    // --- Dark Mode Logic ---
-    function initDarkMode() {
-        const toggle = document.getElementById('darkModeToggle');
-        const icon = toggle.querySelector('i');
-        
-        if(localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-            icon.classList.replace('fa-moon', 'fa-sun');
-        }
+    // --- DARK MODE LOGIC ---
+    const modeBtn = document.getElementById('modeBtn');
+    const body = document.body;
 
-        toggle.onclick = () => {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            icon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        };
+    if (localStorage.getItem('theme') === 'dark') {
+        body.classList.add('dark-mode');
+        modeBtn.innerHTML = '<i class="fas fa-sun"></i>';
     }
 
-    // --- Fetch Products ---
-    async function loadProducts() {
+    modeBtn.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        const isDark = body.classList.contains('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        modeBtn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    });
+
+    function showToast(message) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'toast show';
+        toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+        container.appendChild(toast);
+        setTimeout(() => { toast.remove(); }, 3000);
+    }
+
+    async function fetchProducts() {
         try {
             const res = await fetch(apiURL);
             const products = await res.json();
@@ -224,57 +248,31 @@
                 <div class="card">
                     <img src="${p.image || p.imageUrl}" onerror="this.src='https://placehold.co/400x300?text=Product'">
                     <div class="card-body">
-                        <h3 style="font-size: 16px; margin: 10px 0;">${p.name}</h3>
-                        <p style="color: var(--accent); font-weight: 700;">৳ ${p.price}</p>
+                        <h3>${p.name}</h3>
+                        <p class="price">৳ ${p.price}</p>
                         <button class="buy-btn" onclick="addToCart('${p.name}', ${p.price}, '${p.image || p.imageUrl}')">Add to Cart</button>
                     </div>
                 </div>
             `).join('');
-        } catch (e) { console.log("Error loading products"); }
-    }
-
-    // --- Review System ---
-    const stars = document.querySelectorAll('#starInput i');
-    stars.forEach(star => {
-        star.onclick = function() {
-            const val = this.dataset.value;
-            document.getElementById('selectedRating').value = val;
-            stars.forEach(s => s.classList.toggle('active', s.dataset.value <= val));
+        } catch (err) {
+            document.getElementById('productList').innerHTML = "<p>Failed to load products.</p>";
         }
-    });
-
-    function addReview() {
-        const name = document.getElementById('revName').value;
-        const text = document.getElementById('revText').value;
-        const rating = document.getElementById('selectedRating').value;
-        
-        if(!name || !text) return alert("Please fill name and review!");
-
-        const html = `
-            <div class="review-card">
-                <div class="rev-stars">${'<i class="fas fa-star"></i>'.repeat(rating)}</div>
-                <span class="rev-user">${name}</span>
-                <p>"${text}"</p>
-            </div>
-        `;
-        document.getElementById('reviewList').insertAdjacentHTML('afterbegin', html);
-        showToast("Feedback submitted successfully!");
-        document.getElementById('revName').value = '';
-        document.getElementById('revText').value = '';
     }
 
-    // --- Helpers ---
-    function showToast(msg) {
-        const toast = document.createElement('div');
-        toast.className = 'toast show';
-        toast.innerHTML = `<i class="fa fa-check-circle"></i> ${msg}`;
-        document.getElementById('toast-container').appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
+    function searchProduct() {
+        let input = document.getElementById('mainSearch').value.toLowerCase();
+        let cards = document.getElementsByClassName('card');
+        for (let card of cards) {
+            let name = card.querySelector('h3').innerText.toLowerCase();
+            card.style.display = name.includes(input) ? "block" : "none";
+        }
     }
 
     function addToCart(name, price, image) {
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        cart.push({name, price, image, quantity: 1});
+        let item = cart.find(i => i.name === name);
+        if(item) item.quantity += 1;
+        else cart.push({name, price, image, quantity: 1});
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCartCount();
         showToast(`${name} added to cart!`);
@@ -282,14 +280,47 @@
 
     function updateCartCount() {
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        document.getElementById('cartCount').innerText = cart.length;
+        document.getElementById('cartCount').innerText = cart.reduce((acc, curr) => acc + curr.quantity, 0);
     }
 
-    setInterval(() => {
-        const now = new Date();
-        document.getElementById('liveClock').innerText = now.toLocaleTimeString() + " | " + now.toLocaleDateString();
-    }, 1000);
-</script>
+    // Star Rating logic
+    const stars = document.querySelectorAll('#starInput i');
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const val = this.getAttribute('data-value');
+            document.getElementById('selectedRating').value = val;
+            stars.forEach(s => s.classList.toggle('active', s.getAttribute('data-value') <= val));
+        });
+    });
 
+    function addReview() {
+        const name = document.getElementById('revName').value;
+        const text = document.getElementById('revText').value;
+        const rating = document.getElementById('selectedRating').value;
+        if(name && text) {
+            let starsStr = '<i class="fas fa-star" style="color:#ff9800"></i>'.repeat(rating);
+            const html = `
+                <div class="review-card">
+                    <div>${starsStr}</div>
+                    <strong style="display:block; margin:5px 0;">${name}</strong>
+                    <p style="margin:0; font-size:14px; opacity:0.8;">"${text}"</p>
+                </div>`;
+            document.getElementById('reviewList').insertAdjacentHTML('afterbegin', html);
+            document.getElementById('revName').value = ''; document.getElementById('revText').value = '';
+            showToast("Review submitted!");
+        }
+    }
+
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('liveClock').innerHTML = `<i class="fa fa-calendar-alt"></i> ${now.toLocaleDateString()} | <i class="fa fa-clock"></i> ${now.toLocaleTimeString()}`;
+    }
+    
+    setInterval(updateClock, 1000);
+    fetchProducts();
+    updateCartCount();
+    updateClock();
+    stars.forEach(s => s.classList.add('active'));
+</script>
 </body>
 </html>
