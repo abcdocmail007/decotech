@@ -10,9 +10,18 @@
     <style>
         :root { --primary: #004d40; --accent: #ff9800; --light: #f4f7f6; --white: #ffffff; }
         body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--light); color: #333; overflow-x: hidden; }
-        
+
+        /* --- 1. PRO PRELOADER --- */
+        #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: 0.5s; }
+        .loader-logo { font-size: 30px; font-weight: 800; color: var(--primary); margin-bottom: 15px; animation: pulse 1.5s infinite; }
+        .loader-logo span { color: var(--accent); }
+        .loader-bar { width: 150px; height: 4px; background: #eee; border-radius: 10px; overflow: hidden; }
+        .loader-progress { width: 0%; height: 100%; background: var(--primary); animation: load 2s forwards; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        @keyframes load { 0% { width: 0%; } 100% { width: 100%; } }
+
         /* --- Navbar & Search --- */
-        nav { background: var(--white); padding: 10px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); padding: 10px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .logo { font-size: 26px; font-weight: 700; color: var(--primary); text-decoration: none; min-width: 150px; }
         .logo span { color: var(--accent); }
         
@@ -20,7 +29,6 @@
         .nav-links a { text-decoration: none; color: #444; font-weight: 500; transition: 0.3s; font-size: 15px; }
         .nav-links a:hover { color: var(--accent); }
 
-        /* Dropdown Style */
         .dropdown { position: relative; display: inline-block; }
         .dropbtn { cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .dropdown-content { display: none; position: absolute; background-color: white; min-width: 160px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1); border-radius: 8px; z-index: 1; top: 100%; }
@@ -36,7 +44,7 @@
         /* --- Modern Hero Banner --- */
         .hero { 
             height: 550px; 
-            background: linear-gradient(135deg, rgba(0,77,64,0.8), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1350&q=80'); 
+            background: linear-gradient(135deg, rgba(0,77,64,0.85), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1350&q=80'); 
             background-size: cover; background-position: center; 
             display: flex; align-items: center; justify-content: flex-start; 
             color: white; padding: 0 10%; position: relative; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
@@ -44,7 +52,7 @@
         .hero-content { max-width: 600px; animation: fadeInUp 1s ease; }
         .hero h1 { font-size: 55px; margin: 0; line-height: 1.1; font-weight: 700; }
         .hero p { font-size: 20px; margin: 20px 0 30px; opacity: 0.9; }
-        .hero-btn { background: var(--accent); color: white; padding: 15px 35px; border-radius: 30px; text-decoration: none; font-weight: 600; transition: 0.3s; box-shadow: 0 4px 15px rgba(255,152,0,0.4); }
+        .hero-btn { background: var(--accent); color: white; padding: 15px 35px; border-radius: 30px; text-decoration: none; font-weight: 600; transition: 0.3s; box-shadow: 0 4px 15px rgba(255,152,0,0.4); display: inline-block; }
         .hero-btn:hover { background: #e68900; transform: translateY(-3px); }
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -55,12 +63,18 @@
         
         .card { background: var(--white); border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; text-align: center; border: 1px solid #eee; }
         .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 240px; object-fit: cover; }
+        .card img { width: 100%; height: 240px; object-fit: cover; transition: 0.5s; }
+        .card:hover img { scale: 1.05; }
         .card-body { padding: 20px; }
         .card h3 { margin: 10px 0; font-size: 18px; color: #222; }
         .price { font-size: 20px; font-weight: 700; color: var(--primary); margin-bottom: 15px; }
         .buy-btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 30px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.3s; }
         .buy-btn:hover { background: var(--accent); }
+
+        /* --- 2. FLOATING WHATSAPP BUTTON --- */
+        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background-color: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; text-align: center; font-size: 30px; box-shadow: 2px 5px 15px rgba(0,0,0,0.3); z-index: 1000; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.3s; animation: bounce 2s infinite; }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #128c7e; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
 
         /* --- Reviews --- */
         .review-section { max-width: 800px; margin: 100px auto; padding: 0 20px; }
@@ -83,6 +97,13 @@
     </style>
 </head>
 <body>
+
+<div id="preloader">
+    <div class="loader-logo">Deco<span>Tech</span></div>
+    <div class="loader-bar">
+        <div class="loader-progress"></div>
+    </div>
+</div>
 
 <nav>
     <a href="index.html" class="logo">Deco<span>Tech</span></a>
@@ -125,6 +146,10 @@
 <div class="container" id="productList">
     <p style="text-align: center; grid-column: 1/-1;">Fetching the best for you...</p>
 </div>
+
+<a href="https://wa.me/8801778899326" class="whatsapp-float" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+</a>
 
 <section class="review-section">
     <h2 style="text-align: center; color: var(--primary);">Customer Feedback</h2>
@@ -178,6 +203,15 @@
 <script>
     const apiURL = 'https://decotech-api.onrender.com/api/products';
 
+    // Preloader Control
+    window.addEventListener('load', function() {
+        const preloader = document.getElementById('preloader');
+        setTimeout(() => {
+            preloader.style.opacity = '0';
+            setTimeout(() => { preloader.style.display = 'none'; }, 500);
+        }, 1500);
+    });
+
     // 1. Fetch Products
     async function fetchProducts() {
         try {
@@ -218,6 +252,8 @@
         else cart.push({name, price, image, quantity: 1});
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCartCount();
+        
+        // Custom Alert or Toast would be better, but keeping it simple
         alert(name + " added to cart!");
     }
 
@@ -241,29 +277,28 @@
         const text = document.getElementById('revText').value;
         const rating = document.getElementById('selectedRating').value;
         if(name && text) {
-            let stars = '<i class="fas fa-star"></i>'.repeat(rating);
-            const html = `<div class="review-item"><div class="review-stars">${stars}</div><strong>${name}</strong><p>"${text}"</p></div>`;
+            let starsStr = '<i class="fas fa-star" style="color:#ff9800"></i>'.repeat(rating);
+            const html = `<div style="background:white; padding:15px; border-radius:10px; margin-top:10px; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+                <div>${starsStr}</div>
+                <strong>${name}</strong>
+                <p style="margin:5px 0 0; font-size:14px; color:666;">"${text}"</p>
+            </div>`;
             document.getElementById('reviewList').insertAdjacentHTML('afterbegin', html);
             document.getElementById('revName').value = ''; document.getElementById('revText').value = '';
         }
     }
 
-    // 5. Live Clock for Footer
+    // 5. Live Clock
     function updateClock() {
         const now = new Date();
         document.getElementById('liveClock').innerHTML = `<i class="fa fa-calendar-alt"></i> ${now.toLocaleDateString()} | <i class="fa fa-clock"></i> ${now.toLocaleTimeString()}`;
     }
     setInterval(updateClock, 1000);
 
-    // Init
     fetchProducts();
     updateCartCount();
     updateClock();
-    stars.forEach(s => s.classList.add('active')); // Default 5 stars
+    stars.forEach(s => s.classList.add('active'));
 </script>
 </body>
 </html>
-
-
-
-
