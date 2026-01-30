@@ -1,79 +1,203 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Collection | DecoTech</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --primary: #004d40; --accent: #ff9800; --bg: #f8faf9; }
-        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); }
-        nav { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .logo { font-size: 24px; font-weight: 700; color: var(--primary); text-decoration: none; }
+        :root { --primary: #004d40; --accent: #ff9800; --bg: #f4f7f6; --white: #ffffff; --dark: #1a1a1a; }
+        body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; margin: 0; background: var(--bg); color: #333; }
+
+        /* --- Updated Navbar (Consistency) --- */
+        header { background: var(--white); box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .navbar { display: flex; align-items: center; justify-content: space-between; padding: 15px 7%; max-width: 1400px; margin: auto; }
+        .logo { font-size: 26px; font-weight: 700; color: var(--primary); text-decoration: none; }
         .logo span { color: var(--accent); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 40px 5%; }
-        .card { background: white; padding: 15px; border-radius: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
-        .buy-btn { background: var(--primary); color: white; border: none; padding: 10px; width: 100%; cursor: pointer; border-radius: 5px; margin-top: 10px; }
+
+        .nav-menu { display: flex; list-style: none; gap: 25px; margin: 0; padding: 0; }
+        .nav-menu a { text-decoration: none; color: #333; font-weight: 500; font-size: 15px; transition: 0.3s; }
+        .nav-menu a:hover, .nav-menu a.active { color: var(--accent); }
+
+        .nav-actions { display: flex; align-items: center; gap: 20px; }
+        .cart-icon { position: relative; font-size: 20px; color: var(--primary); text-decoration: none; }
+        #cartCount { position: absolute; top: -10px; right: -12px; background: var(--accent); color: white; font-size: 11px; padding: 2px 6px; border-radius: 50%; font-weight: bold; }
+
+        /* --- Shop Header --- */
+        .shop-header { text-align: center; padding: 60px 20px 40px; }
+        .shop-header h1 { font-size: 36px; color: var(--primary); margin-bottom: 10px; font-family: 'Hind Siliguri'; }
+        
+        /* --- Filters --- */
+        .filter-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
+        .filter-btn { padding: 8px 20px; border: 1px solid #ddd; background: white; border-radius: 25px; cursor: pointer; transition: 0.3s; font-size: 14px; font-weight: 500; }
+        .filter-btn:hover, .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* --- Product Grid --- */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; padding: 0 7% 80px; max-width: 1400px; margin: auto; }
+        
+        .product-card { background: var(--white); border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; position: relative; border: 1px solid #eee; }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        
+        .image-container { position: relative; width: 100%; height: 250px; overflow: hidden; }
+        .product-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .product-card:hover img { transform: scale(1.1); }
+
+        .product-info { padding: 20px; text-align: center; }
+        .product-info .category { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+        .product-info h3 { margin: 0 0 10px; font-size: 18px; color: var(--dark); font-weight: 600; }
+        .product-info .price { font-size: 20px; color: var(--primary); font-weight: 700; margin-bottom: 15px; }
+
+        .add-to-cart { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 600; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .add-to-cart:hover { background: var(--accent); }
+
+        /* --- Loading Spinner --- */
+        .loader { text-align: center; padding: 50px; grid-column: 1/-1; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- Footer (Consistency) --- */
+        footer { background: var(--dark); color: #bbb; padding: 60px 7% 30px; margin-top: 50px; }
+        .footer-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; max-width: 1200px; margin: auto; }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px; padding-top: 20px; text-align: center; font-size: 13px; }
+
+        @media (max-width: 768px) { .nav-menu { display: none; } .product-grid { padding: 0 20px 60px; } }
     </style>
 </head>
 <body>
 
-    <nav>
+<header>
+    <nav class="navbar">
         <a href="index.html" class="logo">Deco<span>Tech</span></a>
-        <div>
-            <a href="index.html">Home</a> | <a href="shop.html">Shop</a>
+        <ul class="nav-menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shop.html" class="active">Shop</a></li>
+            <li><a href="gadgets.html">Gadgets</a></li>
+            <li><a href="decor.html">Decor</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="cart.html" class="cart-icon">
+                <i class="fa fa-shopping-bag"></i>
+                <span id="cartCount">0</span>
+            </a>
         </div>
-        <a href="cart.html"><i class="fa fa-shopping-cart"></i></a>
     </nav>
+</header>
 
-    <h1 style="text-align: center; margin-top: 30px;">All Collection</h1>
+<div class="shop-header">
+    <h1>আমাদের সকল কালেকশন</h1>
+    <p>সেরা মানের প্রোডাক্ট বেছে নিন আপনার জীবনযাত্রার জন্য।</p>
+</div>
 
-    <div id="shopProductList" class="grid">
-        <p style="text-align: center; grid-column: 1/-1;">প্রোডাক্ট লোড হচ্ছে...</p>
+<div class="filter-container">
+    <button class="filter-btn active" onclick="filterProducts('all', this)">All</button>
+    <button class="filter-btn" onclick="filterProducts('Gadgets', this)">Gadgets</button>
+    <button class="filter-btn" onclick="filterProducts('Decor', this)">Decor</button>
+    <button class="filter-btn" onclick="filterProducts('Clothing', this)">Clothing</button>
+</div>
+
+<div id="shopProductList" class="product-grid">
+    <div class="loader">
+        <div class="spinner"></div>
+        <p>প্রোডাক্ট লোড হচ্ছে...</p>
     </div>
+</div>
 
-    <script>
-        async function loadShop() {
-            try {
-                const res = await fetch('https://decotech-api.onrender.com/api/products');
-                const products = await res.json();
-                
-                const list = document.getElementById('shopProductList');
-                
-                if (!products || products.length === 0) {
-                    list.innerHTML = '<p>কোনো প্রোডাক্ট পাওয়া যায়নি।</p>';
-                    return;
-                }
+<footer>
+    <div class="footer-container">
+        <div class="footer-box">
+            <h3 style="color:white">DecoTech</h3>
+            <p>সেরা কোয়ালিটির স্মার্ট গ্যাজেট এবং হোম ডেকোর সলিউশন।</p>
+        </div>
+        <div class="footer-box">
+            <h3 style="color:white">Quick Links</h3>
+            <a href="index.html" style="color:#bbb; text-decoration:none; display:block; margin:5px 0">Home</a>
+            <a href="shop.html" style="color:#bbb; text-decoration:none; display:block; margin:5px 0">Shop</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 DecoTech. All Rights Reserved.</p>
+    </div>
+</footer>
 
-                list.innerHTML = products.map(p => `
-                    <div class="card">
-                        <img src="${p.image || p.imageUrl}" onerror="this.src='https://placehold.co/300x200'">
-                        <h3>${p.name}</h3>
-                        <p>Category: ${p.category}</p>
-                        <div style="font-weight: bold; color: var(--primary);">৳ ${p.price}</div>
-                        <button class="buy-btn" onclick="addToCart('${p.name}', ${p.price}, '${p.image || p.imageUrl}')">Add to Cart</button>
-                    </div>
-                `).join('');
-            } catch (err) {
-                console.error("Shop Load Error:", err);
-                document.getElementById('shopProductList').innerHTML = '<p style="color:red;">সার্ভার কানেকশন ফেল করেছে!</p>';
-            }
+<script>
+    let allProducts = [];
+
+    async function loadShop() {
+        try {
+            const res = await fetch('https://decotech-api.onrender.com/api/products');
+            allProducts = await res.json();
+            displayProducts(allProducts);
+        } catch (err) {
+            console.error("Shop Load Error:", err);
+            document.getElementById('shopProductList').innerHTML = '<p style="color:red; text-align:center; grid-column:1/-1;">সার্ভার কানেকশন ফেল করেছে!</p>';
+        }
+    }
+
+    function displayProducts(products) {
+        const list = document.getElementById('shopProductList');
+        if (!products || products.length === 0) {
+            list.innerHTML = '<p style="text-align:center; grid-column:1/-1;">কোনো প্রোডাক্ট পাওয়া যায়নি।</p>';
+            return;
         }
 
-        function addToCart(name, price, image) {
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            let existingItem = cart.find(item => item.name === name);
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({ name, price: Number(price), image, quantity: 1 });
-            }
-            localStorage.setItem('cart', JSON.stringify(cart));
-            alert(name + " কার্টে যোগ হয়েছে!");
-        }
+        list.innerHTML = products.map(p => `
+            <div class="product-card">
+                <div class="image-container">
+                    <img src="${p.image || p.imageUrl}" alt="${p.name}" onerror="this.src='https://placehold.co/400x400?text=No+Image'">
+                </div>
+                <div class="product-info">
+                    <span class="category">${p.category}</span>
+                    <h3>${p.name}</h3>
+                    <div class="price">৳ ${p.price}</div>
+                    <button class="add-to-cart" onclick="addToCart('${p.name}', ${p.price}, '${p.image || p.imageUrl}')">
+                        <i class="fas fa-cart-plus"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
 
-        loadShop();
-    </script>
+    function filterProducts(category, btn) {
+        // Active Button Class Change
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        if (category === 'all') {
+            displayProducts(allProducts);
+        } else {
+            const filtered = allProducts.filter(p => p.category === category);
+            displayProducts(filtered);
+        }
+    }
+
+    function addToCart(name, price, image) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let existingItem = cart.find(item => item.name === name);
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({ name, price: Number(price), image, quantity: 1 });
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCount();
+        
+        // Show a nice notification
+        alert(name + " সফলভাবে কার্টে যোগ হয়েছে!");
+    }
+
+    function updateCartCount() {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let count = cart.reduce((acc, curr) => acc + (curr.quantity || 1), 0);
+        document.getElementById('cartCount').innerText = count;
+    }
+
+    loadShop();
+    updateCartCount();
+</script>
+
 </body>
 </html>
