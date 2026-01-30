@@ -5,170 +5,208 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us | DecoTech</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/scrollreveal"></script>
 
     <style>
-        :root { --primary: #004d40; --accent: #ff9800; --text: #333; --bg: #f9fbfb; }
-        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        :root { --primary: #004d40; --accent: #ff9800; --text: #333; --bg: #f4f7f6; --white: #ffffff; --dark: #1a1a1a; }
+        body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; margin: 0; background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* --- Navbar --- */
-        nav { background: #ffffff; padding: 12px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 15px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 1000; }
-        .logo { text-decoration: none; font-size: 26px; font-weight: 700; color: var(--primary); }
+        /* --- Header & Navbar (Same as Contact Page) --- */
+        header { background: var(--white); box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .navbar { display: flex; align-items: center; justify-content: space-between; padding: 15px 7%; max-width: 1400px; margin: auto; }
+        .logo { font-size: 28px; font-weight: 700; color: var(--primary); text-decoration: none; }
         .logo span { color: var(--accent); }
-        .nav-links a { text-decoration: none; color: #444; font-weight: 500; margin: 0 12px; font-size: 15px; transition: 0.3s; }
-        .nav-links a:hover { color: var(--accent); }
+
+        .nav-menu { display: flex; list-style: none; gap: 30px; margin: 0; padding: 0; align-items: center; }
+        .nav-menu a { text-decoration: none; color: #333; font-weight: 500; font-size: 15px; transition: 0.3s; }
+        .nav-menu a:hover { color: var(--accent); }
+
+        .nav-actions { display: flex; align-items: center; gap: 20px; }
+        .cart-icon { position: relative; font-size: 20px; color: var(--primary); text-decoration: none; }
+        #cartCount { position: absolute; top: -10px; right: -12px; background: var(--accent); color: white; font-size: 11px; padding: 2px 6px; border-radius: 50%; font-weight: bold; }
 
         /* --- Hero Section --- */
         .about-hero { 
-            height: 400px; 
-            background: linear-gradient(rgba(0,77,64,0.85), rgba(0,77,64,0.85)), url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200'); 
+            height: 350px; 
+            background: linear-gradient(rgba(0, 77, 64, 0.8), rgba(0, 77, 64, 0.8)), url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200'); 
             background-size: cover; background-position: center; 
             display: flex; align-items: center; justify-content: center; color: white; text-align: center;
         }
-        .about-hero h1 { font-size: 50px; margin: 0; letter-spacing: 2px; text-transform: uppercase; }
+        .about-hero h1 { font-size: 45px; margin: 0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
 
         /* --- Story Section --- */
-        .container { max-width: 1100px; margin: -50px auto 80px; padding: 0 20px; position: relative; z-index: 2; }
-        .story-card { background: white; padding: 50px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 40px; }
-        .story-text { flex: 1; text-align: left; }
-        .story-text h2 { color: var(--primary); font-size: 32px; margin-bottom: 20px; }
-        .story-text p { font-size: 16px; line-height: 1.8; color: #555; }
-        .story-img { flex: 1; border-radius: 15px; overflow: hidden; box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        .story-img img { width: 100%; transition: 0.5s; }
-        .story-img:hover img { transform: scale(1.1); }
+        .container { max-width: 1150px; margin: -60px auto 80px; padding: 0 20px; position: relative; z-index: 2; }
+        .story-card { background: white; padding: 50px; border-radius: 20px; box-shadow: 0 15px 50px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 50px; }
+        .story-text { flex: 1.2; }
+        .story-text h2 { color: var(--primary); font-size: 32px; margin-bottom: 20px; font-family: 'Hind Siliguri'; }
+        .story-text p { font-size: 16px; line-height: 1.8; color: #555; margin-bottom: 15px; }
+        .story-img { flex: 0.8; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .story-img img { width: 100%; display: block; transition: 0.6s; }
+        .story-img:hover img { transform: scale(1.08); }
 
         /* --- Stats Section --- */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-top: 60px; text-align: center; }
-        .stat-item { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); border-bottom: 4px solid var(--accent); }
-        .stat-item i { font-size: 40px; color: var(--primary); margin-bottom: 15px; }
-        .stat-item h3 { font-size: 28px; margin: 5px 0; color: #222; }
-        .stat-item p { color: #888; margin: 0; font-weight: 500; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px; margin-top: 60px; }
+        .stat-item { background: white; padding: 35px 20px; border-radius: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.04); transition: 0.3s; border-bottom: 4px solid var(--accent); }
+        .stat-item:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+        .stat-item i { font-size: 35px; color: var(--primary); margin-bottom: 15px; }
+        .stat-item h3 { font-size: 30px; margin: 5px 0; color: var(--dark); }
+        .stat-item p { color: #777; margin: 0; font-weight: 500; font-size: 14px; }
 
-        /* --- Vision & Values --- */
-        .values-section { background: var(--primary); color: white; padding: 80px 5%; text-align: center; }
-        .values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 40px; }
-        .value-card { padding: 30px; border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; transition: 0.3s; }
-        .value-card:hover { background: rgba(255,255,255,0.05); transform: translateY(-10px); }
-        .value-card i { font-size: 35px; color: var(--accent); margin-bottom: 20px; }
+        /* --- Values Section --- */
+        .values-section { background: var(--primary); color: white; padding: 100px 7%; text-align: center; }
+        .values-section h2 { font-size: 36px; margin-bottom: 50px; font-family: 'Hind Siliguri'; }
+        .values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .value-card { padding: 40px 30px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; transition: 0.4s; }
+        .value-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-10px); }
+        .value-card i { font-size: 40px; color: var(--accent); margin-bottom: 25px; }
+        .value-card h3 { font-size: 22px; margin-bottom: 15px; }
+        .value-card p { font-size: 15px; color: #ced4da; line-height: 1.6; }
 
-        /* --- Footer --- */
-        footer { background: #00332a; color: white; padding: 40px 0; text-align: center; font-size: 14px; }
+        /* --- Footer (Same as Contact) --- */
+        footer { background: var(--dark); color: #bbb; padding: 80px 7% 30px; }
+        .footer-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; max-width: 1200px; margin: auto; }
+        .footer-box h3 { color: white; margin-bottom: 25px; font-size: 18px; position: relative; }
+        .footer-box h3::after { content: ''; position: absolute; left: 0; bottom: -8px; width: 40px; height: 2px; background: var(--accent); }
+        .footer-box a { display: block; color: #bbb; text-decoration: none; margin-bottom: 12px; transition: 0.3s; font-size: 14px; }
+        .footer-box a:hover { color: var(--accent); padding-left: 5px; }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 50px; padding-top: 25px; text-align: center; font-size: 13px; }
 
-        @media (max-width: 768px) {
-            .story-card { flex-direction: column; padding: 30px; }
-            .about-hero h1 { font-size: 35px; }
+        @media (max-width: 850px) {
+            .navbar { padding: 15px 5%; }
+            .nav-menu { display: none; }
+            .story-card { flex-direction: column; padding: 30px; text-align: center; }
+            .about-hero h1 { font-size: 32px; }
         }
     </style>
 </head>
 <body>
 
-    <nav>
+<header>
+    <nav class="navbar">
         <a href="index.html" class="logo">Deco<span>Tech</span></a>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="shop.html">Shop</a>
-            <a href="gadgets.html">Gadgets</a>
-            <a href="decor.html">Decor</a>
-            <a href="clothing.html">Clothing</a>
-            <a href="about.html" style="color: var(--accent);">About Us</a>
-            <a href="contact.html">Contact</a>
-        </div>
-        <div style="display: flex; gap: 15px; align-items: center;">
-            <a href="cart.html" style="color: var(--primary); font-size: 20px; position: relative; text-decoration: none;">
-                <i class="fa fa-shopping-cart"></i>
-                <span id="cartCount" style="position: absolute; top: -10px; right: -10px; background: var(--accent); color: white; font-size: 10px; padding: 2px 6px; border-radius: 50%; font-weight: bold;">0</span>
+        <ul class="nav-menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="gadgets.html">Gadgets</a></li>
+            <li><a href="decor.html">Decor</a></li>
+            <li><a href="about.html" style="color: var(--accent);">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="cart.html" class="cart-icon">
+                <i class="fa fa-shopping-bag"></i>
+                <span id="cartCount">0</span>
             </a>
         </div>
     </nav>
+</header>
 
-    <div class="about-hero">
-        <h1 class="reveal-top">Our Story</h1>
-    </div>
+<div class="about-hero">
+    <h1 class="reveal-top">Our Journey</h1>
+</div>
 
-    <div class="container">
-        <div class="story-card reveal-left">
-            <div class="story-text">
-                <h2>Redefining Living Spaces</h2>
-                <p>
-                    Founded in <b>2026</b>, DecoTech emerged from a passion for blending modern technology with timeless aesthetics. We believe that your home is a reflection of your soul, and every gadget or decor piece should tell a story.
-                </p>
-                <p>
-                    From smart gadgets that simplify your life to premium clothing that expresses your personality, we curate products that meet the highest standards of quality and innovation.
-                </p>
-            </div>
-            <div class="story-img">
-                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600" alt="Team Work">
-            </div>
+<div class="container">
+    <div class="story-card reveal-left">
+        <div class="story-text">
+            <h2>Redefining Living Spaces</h2>
+            <p>
+                Founded in <b>2026</b>, DecoTech emerged from a passion for blending modern technology with timeless aesthetics. We believe that your home is a reflection of your soul, and every gadget or decor piece should tell a story.
+            </p>
+            <p>
+                From smart gadgets that simplify your life to premium clothing that expresses your personality, we curate products that meet the highest standards of quality and innovation.
+            </p>
         </div>
-
-        <div class="stats-grid">
-            <div class="stat-item reveal-item">
-                <i class="fa fa-users"></i>
-                <h3>10k+</h3>
-                <p>Happy Customers</p>
-            </div>
-            <div class="stat-item reveal-item">
-                <i class="fa fa-box-open"></i>
-                <h3>500+</h3>
-                <p>Premium Products</p>
-            </div>
-            <div class="stat-item reveal-item">
-                <i class="fa fa-globe"></i>
-                <h3>24/7</h3>
-                <p>Online Support</p>
-            </div>
-            <div class="stat-item reveal-item">
-                <i class="fa fa-truck"></i>
-                <h3>Fast</h3>
-                <p>Global Shipping</p>
-            </div>
+        <div class="story-img">
+            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600" alt="Team Work">
         </div>
     </div>
 
-    <div class="values-section">
-        <h2 style="font-size: 35px;">Our Core Values</h2>
-        <div class="values-grid">
-            <div class="value-card reveal-bottom">
-                <i class="fa fa-gem"></i>
-                <h3>Quality First</h3>
-                <p>We never compromise on quality. Every product is handpicked and tested for durability.</p>
-            </div>
-            <div class="value-card reveal-bottom">
-                <i class="fa fa-lightbulb"></i>
-                <h3>Innovation</h3>
-                <p>Staying ahead with the latest technology and unique designs in the lifestyle market.</p>
-            </div>
-            <div class="value-card reveal-bottom">
-                <i class="fa fa-heart"></i>
-                <h3>Customer Love</h3>
-                <p>Your satisfaction is our priority. We are here to help you before and after every purchase.</p>
-            </div>
+    <div class="stats-grid">
+        <div class="stat-item reveal-item">
+            <i class="fa fa-heart"></i>
+            <h3>10k+</h3>
+            <p>Happy Customers</p>
+        </div>
+        <div class="stat-item reveal-item">
+            <i class="fa fa-rocket"></i>
+            <h3>500+</h3>
+            <p>Premium Products</p>
+        </div>
+        <div class="stat-item reveal-item">
+            <i class="fa fa-headset"></i>
+            <h3>24/7</h3>
+            <p>Quick Support</p>
+        </div>
+        <div class="stat-item reveal-item">
+            <i class="fa fa-shield-alt"></i>
+            <h3>100%</h3>
+            <p>Secure Shopping</p>
         </div>
     </div>
+</div>
 
-    <footer>
-        <p>&copy; 2026 DecoTech | Crafted for Excellence</p>
-        <div style="margin-top: 10px; opacity: 0.6;">
-            <i class="fab fa-facebook mx-2"></i>
-            <i class="fab fa-instagram mx-2"></i>
-            <i class="fab fa-twitter mx-2"></i>
+<div class="values-section">
+    <h2>Our Core Values</h2>
+    <div class="values-grid">
+        <div class="value-card reveal-bottom">
+            <i class="fa fa-gem"></i>
+            <h3>Quality First</h3>
+            <p>We never compromise on quality. Every product is handpicked and tested for durability and excellence.</p>
         </div>
-    </footer>
+        <div class="value-card reveal-bottom">
+            <i class="fa fa-lightbulb"></i>
+            <h3>Innovation</h3>
+            <p>Staying ahead with the latest technology and unique designs in the global lifestyle market.</p>
+        </div>
+        <div class="value-card reveal-bottom">
+            <i class="fa fa-smile-beam"></i>
+            <h3>Customer Love</h3>
+            <p>Your satisfaction is our priority. We are here to help you before and after every single purchase.</p>
+        </div>
+    </div>
+</div>
 
-    <script>
-        // Animations
-        ScrollReveal().reveal('.reveal-top', { distance: '50px', duration: 1000, origin: 'top' });
-        ScrollReveal().reveal('.reveal-left', { distance: '60px', duration: 1200, origin: 'left' });
-        ScrollReveal().reveal('.reveal-item', { distance: '30px', duration: 800, origin: 'bottom', interval: 200 });
-        ScrollReveal().reveal('.reveal-bottom', { distance: '50px', duration: 1000, origin: 'bottom' });
+<footer>
+    <div class="footer-container">
+        <div class="footer-box">
+            <a href="index.html" class="logo" style="color: white; font-size: 24px;">Deco<span>Tech</span></a>
+            <p style="margin-top: 15px; line-height: 1.6;">Your one-stop destination for premium home decor and modern gadgets.</p>
+        </div>
+        <div class="footer-box">
+            <h3>Quick Links</h3>
+            <a href="index.html">Home</a>
+            <a href="shop.html">Our Shop</a>
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+        <div class="footer-box">
+            <h3>Support</h3>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Track Order</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 DecoTech. Crafted for Excellence.</p>
+    </div>
+</footer>
 
-        // Cart Count Update
-        function updateCart() {
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            document.getElementById('cartCount').innerText = cart.length;
-        }
-        updateCart();
-    </script>
+<script>
+    // Animations
+    ScrollReveal().reveal('.reveal-top', { distance: '50px', duration: 1000, origin: 'top' });
+    ScrollReveal().reveal('.reveal-left', { distance: '60px', duration: 1200, origin: 'left' });
+    ScrollReveal().reveal('.reveal-item', { distance: '30px', duration: 800, origin: 'bottom', interval: 200 });
+    ScrollReveal().reveal('.reveal-bottom', { distance: '50px', duration: 1000, origin: 'bottom', interval: 200 });
+
+    // Cart Count Update
+    function updateCartCount() {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let count = cart.reduce((acc, curr) => acc + (curr.quantity || 1), 0);
+        document.getElementById('cartCount').innerText = count;
+    }
+    updateCartCount();
+</script>
+
 </body>
 </html>
