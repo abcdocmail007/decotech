@@ -4,165 +4,241 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>আপনার শপিং কার্ট | DecoTech</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root { --primary: #004d40; --accent: #c09b5d; --bg: #f4f7f6; }
-        body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; margin: 0; background: var(--bg); }
+        :root { --primary: #004d40; --accent: #ff9800; --light: #f4f7f6; --white: #ffffff; --dark: #1a1a1a; }
+        body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; margin: 0; background: var(--light); color: #333; }
 
-        /* NAVBAR */
-        nav { background: white; padding: 15px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 24px; font-weight: 700; color: var(--primary); text-decoration: none; }
-        .logo span { color: #ff9800; }
-        .nav-links a { text-decoration: none; color: #333; margin: 0 10px; font-weight: 500; }
+        /* --- Updated Premium Navbar --- */
+        header { 
+            background: var(--white); 
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1); 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+        }
+        .navbar { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 15px 7%; 
+            max-width: 1400px; 
+            margin: auto;
+        }
+        .logo { font-size: 28px; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .logo span { color: var(--accent); }
 
-        /* CART LAYOUT */
-        .cart-wrapper { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        .nav-menu { display: flex; list-style: none; gap: 30px; margin: 0; padding: 0; }
+        .nav-menu a { text-decoration: none; color: #333; font-weight: 500; font-size: 15px; transition: 0.3s; }
+        .nav-menu a:hover { color: var(--accent); }
+
+        .nav-actions { display: flex; align-items: center; gap: 20px; }
+        .cart-icon { position: relative; font-size: 20px; color: var(--primary); text-decoration: none; }
+        #cartCount { 
+            position: absolute; top: -10px; right: -12px; background: var(--accent); 
+            color: white; font-size: 11px; padding: 2px 6px; border-radius: 50%; 
+        }
+
+        /* --- Cart Layout --- */
+        .cart-wrapper { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 2fr 1fr; gap: 30px; min-height: 60vh; }
         .cart-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 15px; border-bottom: 2px solid #eee; color: #666; font-family: 'Hind Siliguri'; }
         td { padding: 20px 15px; border-bottom: 1px solid #eee; }
 
-        /* QUANTITY SELECTOR */
+        /* Quantity Selector */
         .qty-box { display: flex; align-items: center; border: 1px solid #ddd; width: fit-content; border-radius: 5px; }
         .qty-box button { background: #f0f0f0; border: none; padding: 5px 12px; cursor: pointer; font-weight: bold; font-size: 16px; }
-        .qty-box button:hover { background: #ddd; }
         .qty-box span { width: 40px; text-align: center; font-weight: 600; display: inline-block; }
 
         .summary-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); height: fit-content; }
-        .total-row { border-top: 2px solid #eee; padding-top: 15px; font-weight: 700; color: #1d4ed8; font-size: 22px; }
-        .checkout-btn { width: 100%; background: var(--accent); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: 0.3s; font-family: 'Hind Siliguri'; }
-        .checkout-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .total-row { border-top: 2px solid #eee; padding-top: 15px; font-weight: 700; color: var(--primary); font-size: 22px; }
+        .checkout-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: 0.3s; font-family: 'Hind Siliguri'; }
+        .checkout-btn:hover { background: var(--accent); transform: translateY(-2px); }
 
-        footer { background: var(--primary); color: white; padding: 40px 5%; text-align: center; margin-top: 50px; }
-        @media (max-width: 850px) { .cart-wrapper { grid-template-columns: 1fr; } }
+        /* --- Updated Modern Footer --- */
+        footer { background: var(--dark); color: #bbb; padding: 80px 7% 30px; margin-top: 100px; }
+        .footer-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; max-width: 1200px; margin: auto; }
+        .footer-box h3 { color: white; margin-bottom: 25px; font-size: 18px; position: relative; }
+        .footer-box h3::after { content: ''; position: absolute; left: 0; bottom: -8px; width: 40px; height: 2px; background: var(--accent); }
+        .footer-box a { display: block; color: #bbb; text-decoration: none; margin-bottom: 12px; transition: 0.3s; font-size: 14px; }
+        .footer-box a:hover { color: var(--accent); padding-left: 5px; }
+        .social-links { display: flex; gap: 15px; margin-top: 20px; }
+        .social-links a { width: 35px; height: 35px; background: rgba(255,255,255,0.1); display: grid; place-items: center; border-radius: 50%; color: white; transition: 0.3s; }
+        .social-links a:hover { background: var(--accent); transform: translateY(-3px); }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 50px; padding-top: 25px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+
+        @media (max-width: 850px) { .cart-wrapper { grid-template-columns: 1fr; } .navbar { padding: 15px 5%; } .nav-menu { display: none; } }
     </style>
 </head>
 <body>
 
-    <nav>
+<header>
+    <nav class="navbar">
         <a href="index.html" class="logo">Deco<span>Tech</span></a>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="shop.html">Shop</a>
-            <a href="gadgets.html">Gadgets</a>
+        <ul class="nav-menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="cart.html" class="cart-icon">
+                <i class="fa fa-shopping-bag"></i>
+                <span id="cartCount">0</span>
+            </a>
         </div>
-        <div style="font-size: 20px; color: var(--primary);"><i class="fas fa-shopping-cart"></i></div>
     </nav>
+</header>
 
-    <div class="cart-wrapper">
-        <div class="cart-card">
-            <h2 style="margin-bottom:20px; font-family: 'Hind Siliguri';"><i class="fas fa-shopping-basket"></i> আপনার শপিং কার্ট</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>পণ্য</th>
-                        <th>পরিমাণ</th>
-                        <th>দাম</th>
-                        <th style="text-align: right;">অ্যাকশন</th>
-                    </tr>
-                </thead>
-                <tbody id="cartTableBody"></tbody>
-            </table>
-        </div>
-
-        <div class="summary-card">
-            <h3 style="font-family: 'Hind Siliguri';">অর্ডার সামারি</h3>
-            <div style="display:flex; justify-content:space-between; margin:10px 0;"><span>সাব-টোটাল</span><span id="subtotal">৳ ০</span></div>
-            <div style="display:flex; justify-content:space-between; margin:10px 0;"><span>ডেলিভারি চার্জ</span><span>৳ ৬০</span></div>
-            <div class="total-row" style="display:flex; justify-content:space-between;"><span>মোট</span><span id="total">৳ ৬০</span></div>
-            <button class="checkout-btn" onclick="goToCheckout()">চেকআউট করুন</button>
-        </div>
+<div class="cart-wrapper">
+    <div class="cart-card">
+        <h2 style="margin-bottom:20px; font-family: 'Hind Siliguri'; color: var(--primary);"><i class="fas fa-shopping-basket"></i> আপনার শপিং কার্ট</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>পণ্য</th>
+                    <th>পরিমাণ</th>
+                    <th>দাম</th>
+                    <th style="text-align: right;">অ্যাকশন</th>
+                </tr>
+            </thead>
+            <tbody id="cartTableBody"></tbody>
+        </table>
     </div>
 
-    <footer>
-        <div class="footer-bottom">
-            <a href="admin-login.html" style="color: rgba(255,255,255,0.3); text-decoration: none; font-size: 12px;">Admin Login</a> <br>
-            &copy; 2026 DecoTech. All Rights Reserved.
+    <div class="summary-card">
+        <h3 style="font-family: 'Hind Siliguri';">অর্ডার সামারি</h3>
+        <div style="display:flex; justify-content:space-between; margin:10px 0;"><span>সাব-টোটাল</span><span id="subtotal">৳ ০</span></div>
+        <div style="display:flex; justify-content:space-between; margin:10px 0;"><span>ডেলিভারি চার্জ</span><span>৳ ৬০</span></div>
+        <div class="total-row" style="display:flex; justify-content:space-between;"><span>মোট</span><span id="total">৳ ৬০</span></div>
+        <button class="checkout-btn" onclick="goToCheckout()">চেকআউট করুন</button>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-box">
+            <a href="index.html" class="logo" style="color: white; font-size: 24px;">Deco<span>Tech</span></a>
+            <p style="margin-top: 15px; line-height: 1.6;">Your one-stop destination for premium home decor and modern gadgets. Style your life with us.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
         </div>
-    </footer>
+        <div class="footer-box">
+            <h3>Quick Links</h3>
+            <a href="index.html">Home</a>
+            <a href="shop.html">Our Shop</a>
+            <a href="about.html">About Us</a>
+            <a href="admin-login.html">Admin Login</a>
+        </div>
+        <div class="footer-box">
+            <h3>Contact Info</h3>
+            <p><i class="fa fa-map-marker-alt" style="color: var(--accent);"></i> Level 4, Tech Plaza, Rajshahi</p>
+            <p><i class="fa fa-envelope" style="color: var(--accent);"></i> support@decotech.com</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 DecoTech. All Rights Reserved.</p>
+        <div id="liveClock" style="color: var(--accent); font-weight: 500;"></div>
+    </div>
+</footer>
 
-    <script>
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+<script>
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-        function renderCart() {
-            const tableBody = document.getElementById('cartTableBody');
-            let subtotal = 0;
+    function renderCart() {
+        const tableBody = document.getElementById('cartTableBody');
+        let subtotal = 0;
 
-            if (cart.length === 0) {
-                tableBody.innerHTML = "<tr><td colspan='4' style='text-align:center; padding:30px;'>আপনার কার্টটি খালি!</td></tr>";
-                updateSummary(0);
-                return;
-            }
-
-            tableBody.innerHTML = cart.map((item, index) => {
-                const qty = item.quantity || 1;
-                const itemTotal = item.price * qty;
-                subtotal += itemTotal;
-
-                return `
-                    <tr>
-                        <td>
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <img src="${item.image || 'https://placehold.co/50x50'}" width="50" style="border-radius:5px; object-fit:cover;">
-                                <span>${item.name}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="qty-box">
-                                <button onclick="updateQty(${index}, -1)">-</button>
-                                <span>${qty}</span>
-                                <button onclick="updateQty(${index}, 1)">+</button>
-                            </div>
-                        </td>
-                        <td>৳ ${itemTotal}</td>
-                        <td style="text-align: right;">
-                            <i class="fas fa-trash-alt" style="color:#ff5252; cursor:pointer;" onclick="deleteItem(${index})"></i>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-
-            updateSummary(subtotal);
+        if (cart.length === 0) {
+            tableBody.innerHTML = "<tr><td colspan='4' style='text-align:center; padding:30px;'>আপনার কার্টটি খালি!</td></tr>";
+            updateSummary(0);
+            return;
         }
 
-        window.updateQty = function(index, change) {
-            if (!cart[index].quantity) cart[index].quantity = 1;
-            cart[index].quantity += change;
-            if (cart[index].quantity < 1) cart[index].quantity = 1;
+        tableBody.innerHTML = cart.map((item, index) => {
+            const qty = item.quantity || 1;
+            const itemTotal = item.price * qty;
+            subtotal += itemTotal;
+
+            return `
+                <tr>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <img src="${item.image || 'https://placehold.co/50x50'}" width="50" height="50" style="border-radius:5px; object-fit:cover;">
+                            <span style="font-size:14px;">${item.name}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="qty-box">
+                            <button onclick="updateQty(${index}, -1)">-</button>
+                            <span>${qty}</span>
+                            <button onclick="updateQty(${index}, 1)">+</button>
+                        </div>
+                    </td>
+                    <td>৳ ${itemTotal}</td>
+                    <td style="text-align: right;">
+                        <i class="fas fa-trash-alt" style="color:#ff5252; cursor:pointer;" onclick="deleteItem(${index})"></i>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        updateSummary(subtotal);
+        updateCartCount();
+    }
+
+    function updateQty(index, change) {
+        cart[index].quantity = (cart[index].quantity || 1) + change;
+        if (cart[index].quantity < 1) cart[index].quantity = 1;
+        saveAndRefresh();
+    }
+
+    function deleteItem(index) {
+        if(confirm("আপনি কি পণ্যটি সরিয়ে ফেলতে চান?")) {
+            cart.splice(index, 1);
             saveAndRefresh();
         }
+    }
 
-        window.deleteItem = function(index) {
-            if(confirm("আপনি কি পণ্যটি সরিয়ে ফেলতে চান?")) {
-                cart.splice(index, 1);
-                saveAndRefresh();
-            }
-        }
+    function updateSummary(subtotal) {
+        const delivery = subtotal > 0 ? 60 : 0;
+        document.getElementById('subtotal').innerText = `৳ ${subtotal}`;
+        document.getElementById('total').innerText = `৳ ${subtotal + delivery}`;
+    }
 
-        function updateSummary(subtotal) {
-            const delivery = subtotal > 0 ? 60 : 0;
-            document.getElementById('subtotal').innerText = `৳ ${subtotal}`;
-            document.getElementById('total').innerText = `৳ ${subtotal + delivery}`;
-        }
+    function updateCartCount() {
+        document.getElementById('cartCount').innerText = cart.reduce((acc, curr) => acc + (curr.quantity || 1), 0);
+    }
 
-        function saveAndRefresh() {
-            localStorage.setItem('cart', JSON.stringify(cart));
-            renderCart();
-        }
-
-        // Redirect to new professional checkout page
-        function goToCheckout() {
-            if (cart.length === 0) {
-                alert("আপনার কার্ট খালি! অনুগ্রহ করে আগে পণ্য যোগ করুন।");
-                return;
-            }
-            window.location.href = 'checkout.html';
-        }
-
+    function saveAndRefresh() {
+        localStorage.setItem('cart', JSON.stringify(cart));
         renderCart();
-    </script>
+    }
+
+    function goToCheckout() {
+        if (cart.length === 0) {
+            alert("আপনার কার্ট খালি!");
+            return;
+        }
+        window.location.href = 'checkout.html';
+    }
+
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('liveClock').innerHTML = `<i class="fa fa-clock"></i> ${now.toLocaleTimeString()}`;
+    }
+
+    setInterval(updateClock, 1000);
+    renderCart();
+    updateClock();
+</script>
+
 </body>
 </html>
