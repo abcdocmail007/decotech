@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>আপনার শপিং কার্ট | DecoTech</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root { --primary: #004d40; --accent: #ff9800; --light: #f4f7f6; --white: #ffffff; --dark: #1a1a1a; }
         body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; margin: 0; background: var(--light); color: #333; }
 
-        /* --- Updated Premium Navbar --- */
+        /* --- Updated Premium Navbar (Same as Home) --- */
         header { 
             background: var(--white); 
             box-shadow: 0 2px 15px rgba(0,0,0,0.1); 
@@ -30,36 +30,56 @@
         .logo { font-size: 28px; font-weight: 700; color: var(--primary); text-decoration: none; }
         .logo span { color: var(--accent); }
 
-        .nav-menu { display: flex; list-style: none; gap: 30px; margin: 0; padding: 0; }
+        .nav-menu { display: flex; list-style: none; gap: 30px; margin: 0; padding: 0; align-items: center; }
+        .nav-menu li { position: relative; }
         .nav-menu a { text-decoration: none; color: #333; font-weight: 500; font-size: 15px; transition: 0.3s; }
         .nav-menu a:hover { color: var(--accent); }
+
+        /* Dropdown Style */
+        .dropdown-content { 
+            display: none; 
+            position: absolute; 
+            background-color: white; 
+            min-width: 160px; 
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.1); 
+            border-radius: 8px; 
+            z-index: 1001; 
+            top: 100%; 
+            left: 0;
+            padding: 10px 0;
+        }
+        .dropdown-content a { 
+            color: #333; padding: 10px 20px; display: block; font-size: 14px; border-bottom: 1px solid #f5f5f5;
+        }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown-content a:hover { background-color: #f9f9f9; color: var(--accent); }
+        .dropdown:hover .dropdown-content { display: block; }
 
         .nav-actions { display: flex; align-items: center; gap: 20px; }
         .cart-icon { position: relative; font-size: 20px; color: var(--primary); text-decoration: none; }
         #cartCount { 
             position: absolute; top: -10px; right: -12px; background: var(--accent); 
-            color: white; font-size: 11px; padding: 2px 6px; border-radius: 50%; 
+            color: white; font-size: 11px; padding: 2px 6px; border-radius: 50%; font-weight: bold;
         }
 
         /* --- Cart Layout --- */
-        .cart-wrapper { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 2fr 1fr; gap: 30px; min-height: 60vh; }
+        .cart-wrapper { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 2fr 1fr; gap: 30px; min-height: 50vh; }
         .cart-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 15px; border-bottom: 2px solid #eee; color: #666; font-family: 'Hind Siliguri'; }
         td { padding: 20px 15px; border-bottom: 1px solid #eee; }
 
-        /* Quantity Selector */
         .qty-box { display: flex; align-items: center; border: 1px solid #ddd; width: fit-content; border-radius: 5px; }
-        .qty-box button { background: #f0f0f0; border: none; padding: 5px 12px; cursor: pointer; font-weight: bold; font-size: 16px; }
-        .qty-box span { width: 40px; text-align: center; font-weight: 600; display: inline-block; }
+        .qty-box button { background: #f0f0f0; border: none; padding: 5px 12px; cursor: pointer; font-weight: bold; }
+        .qty-box span { width: 35px; text-align: center; font-weight: 600; }
 
         .summary-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); height: fit-content; }
         .total-row { border-top: 2px solid #eee; padding-top: 15px; font-weight: 700; color: var(--primary); font-size: 22px; }
         .checkout-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: 0.3s; font-family: 'Hind Siliguri'; }
         .checkout-btn:hover { background: var(--accent); transform: translateY(-2px); }
 
-        /* --- Updated Modern Footer --- */
+        /* --- Footer (Same as Home) --- */
         footer { background: var(--dark); color: #bbb; padding: 80px 7% 30px; margin-top: 100px; }
         .footer-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; max-width: 1200px; margin: auto; }
         .footer-box h3 { color: white; margin-bottom: 25px; font-size: 18px; position: relative; }
@@ -69,9 +89,12 @@
         .social-links { display: flex; gap: 15px; margin-top: 20px; }
         .social-links a { width: 35px; height: 35px; background: rgba(255,255,255,0.1); display: grid; place-items: center; border-radius: 50%; color: white; transition: 0.3s; }
         .social-links a:hover { background: var(--accent); transform: translateY(-3px); }
-        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 50px; padding-top: 25px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 50px; padding-top: 25px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; flex-wrap: wrap; }
 
-        @media (max-width: 850px) { .cart-wrapper { grid-template-columns: 1fr; } .navbar { padding: 15px 5%; } .nav-menu { display: none; } }
+        @media (max-width: 850px) { 
+            .cart-wrapper { grid-template-columns: 1fr; } 
+            .nav-menu { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -79,12 +102,21 @@
 <header>
     <nav class="navbar">
         <a href="index.html" class="logo">Deco<span>Tech</span></a>
+        
         <ul class="nav-menu">
             <li><a href="index.html">Home</a></li>
-            <li><a href="shop.html">Shop</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropbtn">Shop <i class="fa fa-chevron-down" style="font-size: 10px;"></i></a>
+                <div class="dropdown-content">
+                    <a href="gadgets.html">Gadgets</a>
+                    <a href="decor.html">Decor</a>
+                    <a href="clothing.html">Clothing</a>
+                </div>
+            </li>
             <li><a href="about.html">About</a></li>
-            <li><a href="contact.html">Contact</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
         </ul>
+
         <div class="nav-actions">
             <a href="cart.html" class="cart-icon">
                 <i class="fa fa-shopping-bag"></i>
@@ -123,7 +155,7 @@
     <div class="footer-container">
         <div class="footer-box">
             <a href="index.html" class="logo" style="color: white; font-size: 24px;">Deco<span>Tech</span></a>
-            <p style="margin-top: 15px; line-height: 1.6;">Your one-stop destination for premium home decor and modern gadgets. Style your life with us.</p>
+            <p style="margin-top: 15px; line-height: 1.6;">Your one-stop destination for premium home decor and modern gadgets.</p>
             <div class="social-links">
                 <a href="#"><i class="fab fa-facebook-f"></i></a>
                 <a href="#"><i class="fab fa-instagram"></i></a>
@@ -135,7 +167,6 @@
             <a href="index.html">Home</a>
             <a href="shop.html">Our Shop</a>
             <a href="about.html">About Us</a>
-            <a href="admin-login.html">Admin Login</a>
         </div>
         <div class="footer-box">
             <h3>Contact Info</h3>
@@ -159,6 +190,7 @@
         if (cart.length === 0) {
             tableBody.innerHTML = "<tr><td colspan='4' style='text-align:center; padding:30px;'>আপনার কার্টটি খালি!</td></tr>";
             updateSummary(0);
+            updateCartCount();
             return;
         }
 
@@ -172,7 +204,7 @@
                     <td>
                         <div style="display:flex; align-items:center; gap:10px;">
                             <img src="${item.image || 'https://placehold.co/50x50'}" width="50" height="50" style="border-radius:5px; object-fit:cover;">
-                            <span style="font-size:14px;">${item.name}</span>
+                            <span style="font-size:14px; font-weight:500;">${item.name}</span>
                         </div>
                     </td>
                     <td>
@@ -214,7 +246,8 @@
     }
 
     function updateCartCount() {
-        document.getElementById('cartCount').innerText = cart.reduce((acc, curr) => acc + (curr.quantity || 1), 0);
+        let count = cart.reduce((acc, curr) => acc + (curr.quantity || 1), 0);
+        document.getElementById('cartCount').innerText = count;
     }
 
     function saveAndRefresh() {
