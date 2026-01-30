@@ -8,93 +8,66 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root { --primary: #004d40; --accent: #ff9800; --light: #f4f7f6; --white: #ffffff; --dark: #1a1a1a; }
+        :root { --primary: #004d40; --accent: #ff9800; --light: #f4f7f6; --white: #ffffff; --dark: #1a1a1a; --success: #2ecc71; --danger: #e74c3c; }
         body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; margin: 0; background: var(--light); color: #333; }
 
-        /* --- Updated Premium Navbar (Same as Home) --- */
-        header { 
-            background: var(--white); 
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1); 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-        }
-        .navbar { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            padding: 15px 7%; 
-            max-width: 1400px; 
-            margin: auto;
-        }
+        /* --- Navbar (Consistent with Home) --- */
+        header { background: var(--white); box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .navbar { display: flex; align-items: center; justify-content: space-between; padding: 15px 7%; max-width: 1400px; margin: auto; }
         .logo { font-size: 28px; font-weight: 700; color: var(--primary); text-decoration: none; }
         .logo span { color: var(--accent); }
-
         .nav-menu { display: flex; list-style: none; gap: 30px; margin: 0; padding: 0; align-items: center; }
-        .nav-menu li { position: relative; }
         .nav-menu a { text-decoration: none; color: #333; font-weight: 500; font-size: 15px; transition: 0.3s; }
         .nav-menu a:hover { color: var(--accent); }
 
-        /* Dropdown Style */
-        .dropdown-content { 
-            display: none; 
-            position: absolute; 
-            background-color: white; 
-            min-width: 160px; 
-            box-shadow: 0px 8px 16px rgba(0,0,0,0.1); 
-            border-radius: 8px; 
-            z-index: 1001; 
-            top: 100%; 
-            left: 0;
-            padding: 10px 0;
-        }
-        .dropdown-content a { 
-            color: #333; padding: 10px 20px; display: block; font-size: 14px; border-bottom: 1px solid #f5f5f5;
-        }
-        .dropdown-content a:last-child { border-bottom: none; }
-        .dropdown-content a:hover { background-color: #f9f9f9; color: var(--accent); }
-        .dropdown:hover .dropdown-content { display: block; }
+        .cart-icon { position: relative; font-size: 22px; color: var(--primary); text-decoration: none; }
+        #cartCount { position: absolute; top: -10px; right: -12px; background: var(--accent); color: white; font-size: 11px; padding: 2px 6px; border-radius: 50%; font-weight: bold; }
 
-        .nav-actions { display: flex; align-items: center; gap: 20px; }
-        .cart-icon { position: relative; font-size: 20px; color: var(--primary); text-decoration: none; }
-        #cartCount { 
-            position: absolute; top: -10px; right: -12px; background: var(--accent); 
-            color: white; font-size: 11px; padding: 2px 6px; border-radius: 50%; font-weight: bold;
-        }
+        /* --- Toast Notification --- */
+        #toast-container { position: fixed; bottom: 30px; left: 20px; z-index: 9999; }
+        .toast { background: white; padding: 12px 25px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; border-left: 5px solid var(--primary); transform: translateX(-120%); transition: 0.4s; }
+        .toast.show { transform: translateX(0); }
 
         /* --- Cart Layout --- */
-        .cart-wrapper { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 2fr 1fr; gap: 30px; min-height: 50vh; }
-        .cart-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-        
+        .cart-wrapper { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 2fr 1fr; gap: 30px; min-height: 60vh; animation: fadeIn 0.8s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .cart-card { background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 15px; border-bottom: 2px solid #eee; color: #666; font-family: 'Hind Siliguri'; }
-        td { padding: 20px 15px; border-bottom: 1px solid #eee; }
+        th { text-align: left; padding: 15px; border-bottom: 2px solid #f0f0f0; color: #888; text-transform: uppercase; font-size: 13px; letter-spacing: 1px; }
+        td { padding: 20px 15px; border-bottom: 1px solid #f9f9f9; }
 
-        .qty-box { display: flex; align-items: center; border: 1px solid #ddd; width: fit-content; border-radius: 5px; }
-        .qty-box button { background: #f0f0f0; border: none; padding: 5px 12px; cursor: pointer; font-weight: bold; }
-        .qty-box span { width: 35px; text-align: center; font-weight: 600; }
+        .product-info { display: flex; align-items: center; gap: 15px; }
+        .product-info img { width: 70px; height: 70px; border-radius: 10px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .product-name { font-weight: 600; color: var(--dark); font-size: 15px; }
 
-        .summary-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); height: fit-content; }
-        .total-row { border-top: 2px solid #eee; padding-top: 15px; font-weight: 700; color: var(--primary); font-size: 22px; }
-        .checkout-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: 0.3s; font-family: 'Hind Siliguri'; }
-        .checkout-btn:hover { background: var(--accent); transform: translateY(-2px); }
+        .qty-box { display: flex; align-items: center; border: 1px solid #eee; width: fit-content; border-radius: 25px; overflow: hidden; background: #f9f9f9; }
+        .qty-box button { background: none; border: none; padding: 8px 15px; cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .qty-box button:hover { background: #eee; color: var(--accent); }
+        .qty-box span { width: 30px; text-align: center; font-weight: 700; color: var(--primary); }
 
-        /* --- Footer (Same as Home) --- */
-        footer { background: var(--dark); color: #bbb; padding: 80px 7% 30px; margin-top: 100px; }
+        .price-text { font-weight: 700; color: var(--primary); font-size: 16px; }
+        .delete-btn { color: #ccc; cursor: pointer; transition: 0.3s; font-size: 18px; }
+        .delete-btn:hover { color: var(--danger); transform: scale(1.2); }
+
+        /* --- Summary Section --- */
+        .summary-card { background: var(--primary); color: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,77,64,0.2); height: fit-content; }
+        .summary-card h3 { margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .summary-row { display: flex; justify-content: space-between; margin: 15px 0; font-size: 15px; opacity: 0.9; }
+        .total-row { border-top: 1px solid rgba(255,255,255,0.2); margin-top: 20px; padding-top: 20px; font-weight: 700; font-size: 22px; color: var(--accent); }
+        .checkout-btn { width: 100%; background: var(--accent); color: white; border: none; padding: 18px; border-radius: 10px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 25px; transition: 0.3s; font-family: 'Hind Siliguri'; box-shadow: 0 5px 15px rgba(255,152,0,0.3); }
+        .checkout-btn:hover { background: #e68900; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,152,0,0.4); }
+
+        .empty-cart-ui { text-align: center; padding: 50px 20px; }
+        .empty-cart-ui i { font-size: 80px; color: #ddd; margin-bottom: 20px; }
+        .continue-link { display: inline-block; margin-top: 15px; color: var(--primary); text-decoration: none; font-weight: 600; border-bottom: 2px solid var(--primary); }
+
+        /* --- Footer --- */
+        footer { background: var(--dark); color: #bbb; padding: 60px 7% 30px; margin-top: 100px; }
         .footer-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; max-width: 1200px; margin: auto; }
-        .footer-box h3 { color: white; margin-bottom: 25px; font-size: 18px; position: relative; }
-        .footer-box h3::after { content: ''; position: absolute; left: 0; bottom: -8px; width: 40px; height: 2px; background: var(--accent); }
-        .footer-box a { display: block; color: #bbb; text-decoration: none; margin-bottom: 12px; transition: 0.3s; font-size: 14px; }
-        .footer-box a:hover { color: var(--accent); padding-left: 5px; }
-        .social-links { display: flex; gap: 15px; margin-top: 20px; }
-        .social-links a { width: 35px; height: 35px; background: rgba(255,255,255,0.1); display: grid; place-items: center; border-radius: 50%; color: white; transition: 0.3s; }
-        .social-links a:hover { background: var(--accent); transform: translateY(-3px); }
-        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 50px; padding-top: 25px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; flex-wrap: wrap; }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 50px; padding-top: 25px; display: flex; justify-content: space-between; font-size: 13px; }
 
-        @media (max-width: 850px) { 
-            .cart-wrapper { grid-template-columns: 1fr; } 
-            .nav-menu { display: none; }
-        }
+        @media (max-width: 900px) { .cart-wrapper { grid-template-columns: 1fr; } .nav-menu { display: none; } }
     </style>
 </head>
 <body>
@@ -102,21 +75,12 @@
 <header>
     <nav class="navbar">
         <a href="index.html" class="logo">Deco<span>Tech</span></a>
-        
         <ul class="nav-menu">
             <li><a href="index.html">Home</a></li>
-            <li class="dropdown">
-                <a href="#" class="dropbtn">Shop <i class="fa fa-chevron-down" style="font-size: 10px;"></i></a>
-                <div class="dropdown-content">
-                    <a href="gadgets.html">Gadgets</a>
-                    <a href="decor.html">Decor</a>
-                    <a href="clothing.html">Clothing</a>
-                </div>
-            </li>
+            <li><a href="shop.html">Shop</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="contact.html">Contact Us</a></li>
         </ul>
-
         <div class="nav-actions">
             <a href="cart.html" class="cart-icon">
                 <i class="fa fa-shopping-bag"></i>
@@ -126,28 +90,35 @@
     </nav>
 </header>
 
+<div id="toast-container"></div>
+
 <div class="cart-wrapper">
     <div class="cart-card">
-        <h2 style="margin-bottom:20px; font-family: 'Hind Siliguri'; color: var(--primary);"><i class="fas fa-shopping-basket"></i> আপনার শপিং কার্ট</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>পণ্য</th>
-                    <th>পরিমাণ</th>
-                    <th>দাম</th>
-                    <th style="text-align: right;">অ্যাকশন</th>
-                </tr>
-            </thead>
-            <tbody id="cartTableBody"></tbody>
-        </table>
+        <h2 style="margin-bottom:30px; font-family: 'Hind Siliguri'; color: var(--primary); display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-shopping-cart"></i> আপনার শপিং ব্যাগ
+        </h2>
+        <div id="cartContent">
+            <table>
+                <thead>
+                    <tr>
+                        <th>পণ্য</th>
+                        <th>পরিমাণ</th>
+                        <th>সাব-টোটাল</th>
+                        <th style="text-align: right;">সরান</th>
+                    </tr>
+                </thead>
+                <tbody id="cartTableBody"></tbody>
+            </table>
+        </div>
     </div>
 
     <div class="summary-card">
         <h3 style="font-family: 'Hind Siliguri';">অর্ডার সামারি</h3>
-        <div style="display:flex; justify-content:space-between; margin:10px 0;"><span>সাব-টোটাল</span><span id="subtotal">৳ ০</span></div>
-        <div style="display:flex; justify-content:space-between; margin:10px 0;"><span>ডেলিভারি চার্জ</span><span>৳ ৬০</span></div>
-        <div class="total-row" style="display:flex; justify-content:space-between;"><span>মোট</span><span id="total">৳ ৬০</span></div>
-        <button class="checkout-btn" onclick="goToCheckout()">চেকআউট করুন</button>
+        <div class="summary-row"><span>আইটেম টোটাল</span><span id="subtotal">৳ ০</span></div>
+        <div class="summary-row"><span>ডেলিভারি চার্জ</span><span>৳ ৬০</span></div>
+        <div class="summary-row" style="font-size: 12px; opacity: 0.7;">* ক্যাশ অন ডেলিভারি প্রযোজ্য</div>
+        <div class="total-row"><span>মোট টাকা</span><span id="total">৳ ৬০</span></div>
+        <button class="checkout-btn" onclick="goToCheckout()">চেকআউট নিশ্চিত করুন <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></button>
     </div>
 </div>
 
@@ -155,40 +126,55 @@
     <div class="footer-container">
         <div class="footer-box">
             <a href="index.html" class="logo" style="color: white; font-size: 24px;">Deco<span>Tech</span></a>
-            <p style="margin-top: 15px; line-height: 1.6;">Your one-stop destination for premium home decor and modern gadgets.</p>
-            <div class="social-links">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-            </div>
+            <p style="margin-top: 15px;">প্রিমিয়াম লাইফস্টাইল এবং টেক প্রোডাক্টের নির্ভরযোগ্য প্রতিষ্ঠান।</p>
         </div>
         <div class="footer-box">
             <h3>Quick Links</h3>
-            <a href="index.html">Home</a>
-            <a href="shop.html">Our Shop</a>
-            <a href="about.html">About Us</a>
+            <a href="index.html">হোম</a>
+            <a href="shop.html">শপ</a>
+            <a href="about.html">আমাদের সম্পর্কে</a>
         </div>
         <div class="footer-box">
-            <h3>Contact Info</h3>
-            <p><i class="fa fa-map-marker-alt" style="color: var(--accent);"></i> Level 4, Tech Plaza, Rajshahi</p>
+            <h3>যোগাযোগ</h3>
+            <p><i class="fa fa-map-marker-alt" style="color: var(--accent);"></i> রাজশাহী, বাংলাদেশ</p>
             <p><i class="fa fa-envelope" style="color: var(--accent);"></i> support@decotech.com</p>
         </div>
     </div>
     <div class="footer-bottom">
         <p>&copy; 2026 DecoTech. All Rights Reserved.</p>
-        <div id="liveClock" style="color: var(--accent); font-weight: 500;"></div>
+        <div id="liveClock" style="color: var(--accent);"></div>
     </div>
 </footer>
 
 <script>
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
+    function showToast(message) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<i class="fas fa-info-circle" style="color:var(--primary)"></i> ${message}`;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 100);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 600);
+        }, 2500);
+    }
+
     function renderCart() {
         const tableBody = document.getElementById('cartTableBody');
+        const cartContainer = document.getElementById('cartContent');
         let subtotal = 0;
 
         if (cart.length === 0) {
-            tableBody.innerHTML = "<tr><td colspan='4' style='text-align:center; padding:30px;'>আপনার কার্টটি খালি!</td></tr>";
+            cartContainer.innerHTML = `
+                <div class="empty-cart-ui">
+                    <i class="fas fa-shopping-basket"></i>
+                    <h3>আপনার কার্ট একদম খালি!</h3>
+                    <p>এখনই কেনাকাটা শুরু করতে নিচের লিঙ্কে ক্লিক করুন।</p>
+                    <a href="index.html" class="continue-link">কেনাকাটা চালিয়ে যান</a>
+                </div>`;
             updateSummary(0);
             updateCartCount();
             return;
@@ -202,9 +188,9 @@
             return `
                 <tr>
                     <td>
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <img src="${item.image || 'https://placehold.co/50x50'}" width="50" height="50" style="border-radius:5px; object-fit:cover;">
-                            <span style="font-size:14px; font-weight:500;">${item.name}</span>
+                        <div class="product-info">
+                            <img src="${item.image || 'https://placehold.co/70x70'}" onerror="this.src='https://placehold.co/70x70'">
+                            <div class="product-name">${item.name}</div>
                         </div>
                     </td>
                     <td>
@@ -214,9 +200,9 @@
                             <button onclick="updateQty(${index}, 1)">+</button>
                         </div>
                     </td>
-                    <td>৳ ${itemTotal}</td>
+                    <td><span class="price-text">৳ ${itemTotal}</span></td>
                     <td style="text-align: right;">
-                        <i class="fas fa-trash-alt" style="color:#ff5252; cursor:pointer;" onclick="deleteItem(${index})"></i>
+                        <i class="fas fa-times-circle delete-btn" onclick="deleteItem(${index})"></i>
                     </td>
                 </tr>
             `;
@@ -233,10 +219,10 @@
     }
 
     function deleteItem(index) {
-        if(confirm("আপনি কি পণ্যটি সরিয়ে ফেলতে চান?")) {
-            cart.splice(index, 1);
-            saveAndRefresh();
-        }
+        const name = cart[index].name;
+        cart.splice(index, 1);
+        saveAndRefresh();
+        showToast(`${name} কার্ট থেকে সরানো হয়েছে`);
     }
 
     function updateSummary(subtotal) {
@@ -257,7 +243,7 @@
 
     function goToCheckout() {
         if (cart.length === 0) {
-            alert("আপনার কার্ট খালি!");
+            showToast("অনুগ্রহ করে কিছু পণ্য কার্টে যোগ করুন!");
             return;
         }
         window.location.href = 'checkout.html';
