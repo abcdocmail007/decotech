@@ -22,6 +22,37 @@
 
         body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--light); color: var(--text); overflow-x: hidden; transition: 0.3s ease; }
 
+        /* --- STICKY BAR CSS (NEW) --- */
+        .mobile-sticky-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            z-index: 2000;
+            display: none; /* Default Hidden */
+            box-sizing: border-box;
+        }
+
+        .sticky-info { font-weight: 700; color: var(--primary); font-size: 16px; }
+        
+        .sticky-buy-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(255,152,0,0.3);
+        }
+
         /* --- PRO PRELOADER --- */
         #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: 0.5s; }
         .loader-logo { font-size: 30px; font-weight: 800; color: var(--primary); margin-bottom: 15px; animation: pulse 1.5s infinite; }
@@ -57,7 +88,6 @@
         .search-container input:focus { width: 250px; border-color: var(--accent); }
         .search-container i { position: absolute; right: 12px; top: 10px; color: #888; cursor: pointer; }
 
-        /* Mode Switcher Button */
         #modeBtn { background: none; border: none; color: var(--text); cursor: pointer; font-size: 18px; margin-left: 15px; transition: 0.3s; display: flex; align-items: center; }
 
         /* --- Hero Banner --- */
@@ -111,13 +141,22 @@
         .rev-details .stars { color: var(--accent); font-size: 12px; }
         .review-card p { font-size: 14px; line-height: 1.7; color: var(--text); opacity: 0.9; margin: 0; font-style: italic; }
 
+        /* --- MEDIA QUERIES --- */
         @media (max-width: 900px) {
             .review-container { grid-template-columns: 1fr; }
             .review-box { position: static; }
+            /* Mobile Sticky Bar Show */
+            .mobile-sticky-bar { display: flex; animation: slideUp 0.5s ease; }
+            /* WA Button reposition */
+            .whatsapp-float { bottom: 85px; }
         }
 
-        /* --- Footer & Others --- */
-        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 2px 5px 15px rgba(0,0,0,0.3); z-index: 1000; text-decoration: none; animation: bounce 2s infinite; }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 2px 5px 15px rgba(0,0,0,0.3); z-index: 1000; text-decoration: none; animation: bounce 2s infinite; transition: 0.3s; }
         @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
 
         footer { background: var(--primary); color: white; padding: 60px 5% 30px; margin-top: 0px; transition: 0.3s; }
@@ -135,6 +174,13 @@
 </div>
 
 <div id="toast-container"></div>
+
+<div class="mobile-sticky-bar">
+    <div class="sticky-info">DecoTech Store</div>
+    <button class="sticky-buy-btn" onclick="scrollToProducts()">
+        <i class="fas fa-shopping-cart"></i> Buy Now
+    </button>
+</div>
 
 <nav>
     <a href="index.html" class="logo">Deco<span>Tech</span></a>
@@ -204,8 +250,7 @@
             <button class="post-btn" onclick="addReview()">Post Review <i class="fas fa-paper-plane"></i></button>
         </div>
 
-        <div id="reviewList">
-            </div>
+        <div id="reviewList"></div>
     </div>
 </section>
 
@@ -252,8 +297,15 @@
             setTimeout(() => { preloader.style.display = 'none'; }, 500);
         }, 1000);
         
-        displayStoredReviews(); // পেজ লোড হলে সেভ করা রিভিউ দেখাবে
+        displayStoredReviews();
     });
+
+    // Sticky Scroll Function
+    function scrollToProducts() {
+        document.getElementById('productList').scrollIntoView({ 
+            behavior: 'smooth' 
+        });
+    }
 
     // --- DARK MODE LOGIC ---
     const modeBtn = document.getElementById('modeBtn');
@@ -334,7 +386,6 @@
         });
     });
 
-    // --- UPDATED REVIEW LOGIC (LocalStorage Focus) ---
     function addReview() {
         const name = document.getElementById('revName').value.trim();
         const text = document.getElementById('revText').value.trim();
@@ -348,13 +399,11 @@
                 initials: name.substring(0, 2).toUpperCase()
             };
 
-            // LocalStorage এ সেভ করা
             let reviews = JSON.parse(localStorage.getItem('customerReviews')) || [];
             reviews.unshift(reviewObj);
             localStorage.setItem('customerReviews', JSON.stringify(reviews));
 
-            displayStoredReviews(); // নতুন রিভিউসহ লিস্ট আপডেট করা
-            
+            displayStoredReviews();
             document.getElementById('revName').value = ''; 
             document.getElementById('revText').value = '';
             showToast("Feedback saved permanently!");
@@ -367,7 +416,6 @@
         let reviews = JSON.parse(localStorage.getItem('customerReviews')) || [];
         const reviewList = document.getElementById('reviewList');
         
-        // যদি মেমোরিতে কিছু না থাকে তবে একটা ডিফল্ট রিভিউ দেখানো
         if(reviews.length === 0) {
             reviewList.innerHTML = `
                 <div class="review-card">
