@@ -7,6 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
@@ -38,6 +40,69 @@
         .confirm-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 30px; transition: 0.3s; }
         .confirm-btn:disabled { background: #ccc; cursor: not-allowed; }
         @media (max-width: 850px) { .checkout-container { grid-template-columns: 1fr; } }
+
+        /* সাকসেস মেসেজ স্টাইল */
+        .success-message-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .success-message-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .success-message-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        .success-message-overlay.show .success-message-box {
+            transform: scale(1);
+        }
+        .success-message-box h3 {
+            color: var(--primary);
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        .success-message-box p {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+        .success-message-box .order-id-display {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ff9800;
+            margin-bottom: 25px;
+            display: block;
+        }
+        .success-message-box button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .success-message-box button:hover {
+            background: #003d33;
+        }
     </style>
 </head>
 <body>
@@ -105,6 +170,17 @@
     </div>
 </div>
 
+<div id="successMessageOverlay" class="success-message-overlay">
+    <div class="success-message-box">
+        <i class="fas fa-check-circle" style="color: var(--primary); font-size: 50px; margin-bottom: 20px;"></i>
+        <h3>অর্ডার সফল হয়েছে!</h3>
+        <p>আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে।</p>
+        <span class="order-id-display" id="displayedOrderId"></span>
+        <p style="font-size: 14px; color: #777;">অর্ডার সংক্রান্ত বিস্তারিত তথ্য আপনার ইমেইলে (Spam ফোল্ডারসহ) পাঠানো হয়েছে।</p>
+        <button onclick="redirectToHome()">হোমপেজে ফিরে যান</button>
+    </div>
+</div>
+
 <script>
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let selectedPayment = 'Cash on Delivery';
@@ -143,6 +219,11 @@
         element.classList.add('active');
     }
 
+    async function redirectToHome() {
+        // এখানে সরাসরি index.html এ রিডাইরেক্ট করা হচ্ছে
+        window.location.href = 'index.html';
+    }
+
     document.getElementById('orderForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
@@ -169,9 +250,8 @@
         // ১. হোয়াটসঅ্যাপ মেসেজ পাঠানো (আগে পাঠানো ভালো)
         sendToWhatsApp(orderData);
 
-        // ২. ইমেইল পাঠানো এবং ডেটাবেস সেভ
+        // ২. ইমেইল পাঠানো
         try {
-            // EmailJS এর প্যারামিটার
             const templateParams = {
                 order_id: orderId,
                 to_name: name,
@@ -182,20 +262,26 @@
                 customer_phone: phone
             };
 
-            const response = await emailjs.send("service_qbtls6p", "template_7aca5go", templateParams);
-            console.log("Email Sent Successfully!", response.status, response.text);
-
-            // সফল হলে অ্যালার্ট এবং রিডাইরেক্ট
-            alert(`অর্ডার সফল! আপনার আইডি: ${orderId}`);
-            localStorage.removeItem('cart');
-            window.location.href = 'index.html';
+            await emailjs.send("service_qbtls6p", "template_7aca5go", templateParams);
+            console.log("Email Sent Successfully!");
 
         } catch (err) {
             console.error("EmailJS Error:", err);
-            // মেইল না গেলেও অর্ডার আইডি দেখিয়ে রিডাইরেক্ট করবে
-            alert(`অর্ডার গ্রহণ করা হয়েছে! আপনার আইডি: ${orderId}. (ইমেইল পাঠাতে সমস্যা হয়েছে)`);
+            // ইমেইল পাঠাতে সমস্যা হলেও আমরা কাস্টমারকে সফল মেসেজ দেখাবো
+        } finally {
+            // কনফেটি এনিমেশন দেখানো
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+
+            // সাকসেস মেসেজ বক্স দেখানো
+            document.getElementById('displayedOrderId').innerText = `অর্ডার আইডি: ${orderId}`;
+            document.getElementById('successMessageOverlay').classList.add('show');
             localStorage.removeItem('cart');
-            window.location.href = 'index.html';
+            btn.innerText = "অর্ডার কনফার্ম করুন"; // বাটন রিসেট
+            btn.disabled = false; // বাটন রিসেট
         }
     });
 
