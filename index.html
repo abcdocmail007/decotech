@@ -63,8 +63,8 @@
 
         /* --- PRO PRELOADER --- */
         #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: 0.5s; }
-        .loader-logo { font-size: 30px; font-weight: 800; color: var(--primary); margin-bottom: 15px; animation: pulse 1.5s infinite; }
-        .loader-logo span { color: var(--accent); }
+        .loader-logo { margin-bottom: 15px; animation: pulse 1.5s infinite; }
+        .loader-logo img { height: 80px; width: auto; } /* Adjusted preloader logo size */
         .loader-bar { width: 150px; height: 4px; background: #eee; border-radius: 10px; overflow: hidden; }
         .loader-progress { width: 0%; height: 100%; background: var(--primary); animation: load 2s forwards; }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
@@ -78,8 +78,8 @@
 
         /* --- Navbar & Search --- */
         nav { background: var(--white); backdrop-filter: blur(10px); padding: 10px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; transition: 0.3s; }
-        .logo { font-size: 26px; font-weight: 700; color: var(--primary); text-decoration: none; min-width: 150px; }
-        .logo span { color: var(--accent); }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo img { height: 50px; width: auto; } /* Adjusted navbar logo size */
         .nav-links { display: flex; align-items: center; gap: 20px; }
         .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; transition: 0.3s; font-size: 15px; }
         .nav-links a:hover { color: var(--accent); }
@@ -154,8 +154,8 @@
 
         footer { background: var(--primary); color: white; padding: 60px 5% 30px; margin-top: 0px; transition: 0.3s; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; }
-        .footer-logo { font-size: 28px; font-weight: 700; color: white; text-decoration: none; display: block; margin-bottom: 15px; }
-        .footer-logo span { color: var(--accent); }
+        .footer-logo { display: block; margin-bottom: 15px; }
+        .footer-logo img { height: 60px; width: auto; } /* Adjusted footer logo size */
         .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; opacity: 0.8; }
 
         /* -----------------------------------------------------------
@@ -194,21 +194,25 @@
 <body>
 
 <div id="preloader">
-    <div class="loader-logo">Deco<span>Tech</span></div>
+    <div class="loader-logo">
+        <img src="image_b5b73b.jpg" alt="Deyalika Mart Logo">
+    </div>
     <div class="loader-bar"><div class="loader-progress"></div></div>
 </div>
 
 <div id="toast-container"></div>
 
 <div class="mobile-sticky-bar">
-    <div class="sticky-info">DecoTech Store</div>
+    <div class="sticky-info">Deyalika Mart</div>
     <button class="sticky-buy-btn" onclick="scrollToProducts()">
         <i class="fas fa-shopping-cart"></i> Buy Now
     </button>
 </div>
 
 <nav>
-    <a href="index.html" class="logo">Deco<span>Tech</span></a>
+    <a href="index.html" class="logo">
+        <img src="image_b5b73b.jpg" alt="Deyalika Mart Logo">
+    </a>
     <div class="nav-links">
         <a href="index.html">Home</a>
         <div class="dropdown">
@@ -313,7 +317,9 @@
 <footer>
     <div class="footer-grid">
         <div class="footer-info">
-            <a href="index.html" class="footer-logo">Deco<span>Tech</span></a>
+            <a href="index.html" class="footer-logo">
+                <img src="image_b5b73b.jpg" alt="Deyalika Mart Logo">
+            </a>
             <p><i class="fa fa-map-marker-alt"></i> Level 4, Tech Plaza, Sherpur, Rajshahi, BD</p>
             <p><i class="fa fa-envelope"></i> support@decotech.com</p>
             <div style="display:flex; gap:15px; margin-top:15px;">
@@ -335,7 +341,7 @@
         </div>
     </div>
     <div class="footer-bottom">
-        <div>&copy; 2026 DecoTech. All Rights Reserved.</div>
+        <div>&copy; 2026 Deyalika Mart. All Rights Reserved.</div>
         <div id="liveClock"><i class="fa fa-clock"></i> Loading...</div>
     </div>
 </footer>
@@ -494,7 +500,7 @@
                             <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                         </div>
                     </div>
-                    <p>"DecoTech gadgets are premium and aesthetic. Highly recommended for modern homes!"</p>
+                    <p>"Deyalika Mart products are premium and aesthetic. Highly recommended for modern homes!"</p>
                 </div>`;
             return;
         }
