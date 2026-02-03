@@ -55,7 +55,7 @@
             box-shadow: 0 4px 10px rgba(255,152,0,0.3);
         }
 
-        /* --- SWIPER SLIDER CSS (Added) --- */
+        /* --- SWIPER SLIDER CSS --- */
         .swiper { width: 100%; height: 550px; }
         .swiper-slide { position: relative; }
         .swiper-pagination-bullet-active { background: var(--accent) !important; }
@@ -64,7 +64,7 @@
         /* --- PRO PRELOADER --- */
         #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: 0.5s; }
         .loader-logo { margin-bottom: 15px; animation: pulse 1.5s infinite; }
-        .loader-logo img { height: 80px; width: auto; } /* Adjusted preloader logo size */
+        .loader-logo i { font-size: 50px; color: var(--primary); } 
         .loader-bar { width: 150px; height: 4px; background: #eee; border-radius: 10px; overflow: hidden; }
         .loader-progress { width: 0%; height: 100%; background: var(--primary); animation: load 2s forwards; }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
@@ -78,8 +78,7 @@
 
         /* --- Navbar & Search --- */
         nav { background: var(--white); backdrop-filter: blur(10px); padding: 10px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; transition: 0.3s; }
-        .logo { display: flex; align-items: center; text-decoration: none; }
-        .logo img { height: 50px; width: auto; } /* Adjusted navbar logo size */
+        .logo { display: flex; align-items: center; text-decoration: none; font-size: 22px; font-weight: 700; color: var(--primary); gap: 10px; }
         .nav-links { display: flex; align-items: center; gap: 20px; }
         .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; transition: 0.3s; font-size: 15px; }
         .nav-links a:hover { color: var(--accent); }
@@ -154,14 +153,10 @@
 
         footer { background: var(--primary); color: white; padding: 60px 5% 30px; margin-top: 0px; transition: 0.3s; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; }
-        .footer-logo { display: block; margin-bottom: 15px; }
-        .footer-logo img { height: 60px; width: auto; } /* Adjusted footer logo size */
+        .footer-logo { display: block; margin-bottom: 15px; font-size: 24px; font-weight: 700; color: #fff; text-decoration: none; }
         .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; opacity: 0.8; }
 
-        /* -----------------------------------------------------------
-           ONLY ADDING RESPONSIVE MEDIA QUERIES BELOW 
-           (NO CHANGES TO YOUR ORIGINAL DESIGN/LOGIC)
-        ----------------------------------------------------------- */
+        /* RESPONSIVE MEDIA QUERIES */
         @media (max-width: 900px) {
             nav { flex-direction: column; padding: 15px 5%; }
             .nav-links { margin-top: 10px; flex-wrap: wrap; justify-content: center; }
@@ -195,8 +190,7 @@
 
 <div id="preloader">
     <div class="loader-logo">
-        <img src="https://drive.google.com/drive/u/0/my-drive" alt="Deyalika Mart Logo">
-    </div>
+        <i class="fas fa-shopping-bag"></i> </div>
     <div class="loader-bar"><div class="loader-progress"></div></div>
 </div>
 
@@ -211,7 +205,7 @@
 
 <nav>
     <a href="index.html" class="logo">
-        <img src="https://drive.google.com/drive/u/0/my-drive" alt="Deyalika Mart Logo">
+        <i class="fas fa-gem"></i> Deyalika Mart
     </a>
     <div class="nav-links">
         <a href="index.html">Home</a>
@@ -259,15 +253,6 @@
                 </div>
             </div>
         </div>
-        <div class="swiper-slide">
-            <div class="hero" style="background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1616489953149-75517454e48e?auto=format&fit=crop&w=1350&q=80');">
-                <div class="hero-content">
-                    <h1>Aesthetic <br>Interior Design.</h1>
-                    <p>Turn your room into a masterpiece with our premium decor items.</p>
-                    <a href="decor.html" class="hero-btn">View Decor <i class="fa fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
     </div>
     <div class="swiper-button-next"></div>
     <div class="swiper-button-prev"></div>
@@ -305,7 +290,6 @@
             </div>
             <button class="post-btn" onclick="addReview()">Post Review <i class="fas fa-paper-plane"></i></button>
         </div>
-
         <div id="reviewList"></div>
     </div>
 </section>
@@ -317,11 +301,9 @@
 <footer>
     <div class="footer-grid">
         <div class="footer-info">
-            <a href="index.html" class="footer-logo">
-                <img src="https://drive.google.com/drive/u/0/my-drive" alt="Deyalika Mart Logo">
-            </a>
-            <p><i class="fa fa-map-marker-alt"></i> Level 4, Tech Plaza, Sherpur, Rajshahi, BD</p>
-            <p><i class="fa fa-envelope"></i> support@decotech.com</p>
+            <a href="index.html" class="footer-logo">Deyalika Mart</a>
+            <p><i class="fa fa-map-marker-alt"></i> Level 4, Tech Plaza, Rajshahi, BD</p>
+            <p><i class="fa fa-envelope"></i> support@deyalika.com</p>
             <div style="display:flex; gap:15px; margin-top:15px;">
                 <a href="#" style="color:white; font-size:18px;"><i class="fab fa-facebook"></i></a>
                 <a href="#" style="color:white; font-size:18px;"><i class="fab fa-instagram"></i></a>
@@ -357,30 +339,18 @@
             preloader.style.opacity = '0';
             setTimeout(() => { preloader.style.display = 'none'; }, 500);
         }, 1000);
-        
         displayStoredReviews();
     });
 
     var swiper = new Swiper(".mySwiper", {
         loop: true,
-        autoplay: {
-            delay: 4000,
-            disableOnInteraction: false,
-        },
-        pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-        },
-        navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-        },
+        autoplay: { delay: 4000, disableOnInteraction: false },
+        pagination: { el: ".swiper-pagination", clickable: true },
+        navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
     });
 
     function scrollToProducts() {
-        document.getElementById('productList').scrollIntoView({ 
-            behavior: 'smooth' 
-        });
+        document.getElementById('productList').scrollIntoView({ behavior: 'smooth' });
     }
 
     const modeBtn = document.getElementById('modeBtn');
@@ -464,61 +434,36 @@
         const name = document.getElementById('revName').value.trim();
         const text = document.getElementById('revText').value.trim();
         const rating = document.getElementById('selectedRating').value;
-        
         if(name && text) {
-            const reviewObj = {
-                name: name,
-                text: text,
-                rating: rating,
-                initials: name.substring(0, 2).toUpperCase()
-            };
-
+            const reviewObj = { name, text, rating, initials: name.substring(0, 2).toUpperCase() };
             let reviews = JSON.parse(localStorage.getItem('customerReviews')) || [];
             reviews.unshift(reviewObj);
             localStorage.setItem('customerReviews', JSON.stringify(reviews));
-
             displayStoredReviews();
             document.getElementById('revName').value = ''; 
             document.getElementById('revText').value = '';
-            showToast("Feedback saved permanently!");
-        } else {
-            alert("Please provide both name and feedback.");
+            showToast("Feedback saved!");
         }
     }
 
     function displayStoredReviews() {
         let reviews = JSON.parse(localStorage.getItem('customerReviews')) || [];
         const reviewList = document.getElementById('reviewList');
-        
         if(reviews.length === 0) {
-            reviewList.innerHTML = `
-                <div class="review-card">
-                    <div class="rev-user-info">
-                        <div class="user-avatar">AN</div>
-                        <div class="rev-details">
-                            <strong>Adnan Nayeem</strong>
-                            <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                        </div>
-                    </div>
-                    <p>"Deyalika Mart products are premium and aesthetic. Highly recommended for modern homes!"</p>
-                </div>`;
+            reviewList.innerHTML = `<div class="review-card"><strong>Adnan</strong><p>Great products!</p></div>`;
             return;
         }
-
-        reviewList.innerHTML = reviews.map(rev => {
-            let starsStr = '<i class="fas fa-star"></i>'.repeat(rev.rating);
-            return `
-                <div class="review-card">
-                    <div class="rev-user-info">
-                        <div class="user-avatar">${rev.initials}</div>
-                        <div class="rev-details">
-                            <strong>${rev.name}</strong>
-                            <div class="stars">${starsStr}</div>
-                        </div>
+        reviewList.innerHTML = reviews.map(rev => `
+            <div class="review-card">
+                <div class="rev-user-info">
+                    <div class="user-avatar">${rev.initials}</div>
+                    <div class="rev-details">
+                        <strong>${rev.name}</strong>
+                        <div class="stars">${'<i class="fas fa-star"></i>'.repeat(rev.rating)}</div>
                     </div>
-                    <p>"${rev.text}"</p>
-                </div>`;
-        }).join('');
+                </div>
+                <p>"${rev.text}"</p>
+            </div>`).join('');
     }
 
     function updateClock() {
@@ -534,5 +479,3 @@
 </script>
 </body>
 </html>
-
-
